@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>การพัฒนาความสามารถในการอ่านและเข้าใจความหมายคำศัพท์ภาษาอังกฤษ</title>
+
+<!-- Google Fonts: IBM Plex Sans Thai + Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   DESIGN TOKENS (LIGHT MODE)
+============================================================ */
+:root {
+    /* Colors - Light Mode */
+    --bg-base: #fbfbfd;
+    --bg-elevated: #ffffff;
+    --accent-blue: #0071e3;
+    --accent-cyan: #00c6ff;
+    --accent-purple: #a855f7;
+    --accent-pink: #ec4899;
+    --gradient-primary: linear-gradient(135deg, #0071e3 0%, #00c6ff 100%);
+    --gradient-mixed: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #0071e3 100%);
+    
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-tertiary: #86868b;
+    
+    --surface: rgba(255, 255, 255, 0.7);
+    --surface-hover: rgba(255, 255, 255, 0.95);
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --border-hover: rgba(0, 0, 0, 0.15);
+    
+    /* Typography */
+    --font-display: 'Inter', 'IBM Plex Sans Thai', -apple-system, sans-serif;
+    --font-body: 'IBM Plex Sans Thai', 'Inter', -apple-system, sans-serif;
+    
+    /* Spacing */
+    --space-section: clamp(4rem, 8vw, 8rem);
+    --space-container: clamp(2rem, 5vw, 6rem);
+    
+    /* Timing */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ============================================================
+   RESET & BASE
+============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    background: var(--bg-base);
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    line-height: 1.7;
+    font-optical-sizing: auto;
+    cursor: default;
+    background: var(--bg-base);
+}
+
+/* Noise Texture Overlay (แบบ Stripe - Light Mode) */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: multiply;
+}
+
+/* ============================================================
+   ANIMATED GRADIENT MESH BACKGROUND (Light Mode Pastel)
+============================================================ */
+.gradient-mesh {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.gradient-mesh::before,
+.gradient-mesh::after {
+    content: '';
+    position: absolute;
+    width: 70vw;
+    height: 70vw;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.25;
+}
+
+.gradient-mesh::before {
+    background: radial-gradient(circle, rgba(0, 113, 227, 0.4) 0%, transparent 70%);
+    top: -30%;
+    left: -20%;
+    animation: floatMesh1 25s ease-in-out infinite;
+}
+
+.gradient-mesh::after {
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%);
+    bottom: -30%;
+    right: -20%;
+    animation: floatMesh2 30s ease-in-out infinite;
+}
+
+.mesh-extra {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.mesh-extra::before {
+    content: '';
+    position: absolute;
+    width: 50vw;
+    height: 50vw;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, transparent 70%);
+    filter: blur(100px);
+    top: 40%;
+    left: 30%;
+    animation: floatMesh3 35s ease-in-out infinite;
+}
+
+@keyframes floatMesh1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(10vw, 10vh) scale(1.15); }
+}
+@keyframes floatMesh2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-15vw, -10vh) scale(1.2); }
+}
+@keyframes floatMesh3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-20vw, 15vh) scale(0.9); }
+}
+
+/* ============================================================
+   CURSOR-FOLLOWING GLOW (Light Mode)
+============================================================ */
+.cursor-glow {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 113, 227, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+    mix-blend-mode: multiply;
+}
+
+@media (max-width: 768px) {
+    .cursor-glow { display: none; }
+}
+
+/* ============================================================
+   PROGRESS BAR
+============================================================ */
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+    z-index: 1000;
+    width: 0%;
+    transition: width 0.15s var(--ease-smooth);
+    box-shadow: 0 0 20px rgba(0, 113, 227, 0.5);
+}
+
+/* ============================================================
+   SIDEBAR NAVIGATION
+============================================================ */
+.sidebar-nav {
+    position: fixed;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.sidebar-nav.visible { opacity: 1; }
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out-expo);
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+.nav-item:hover {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: var(--border-subtle);
+}
+
+.nav-item.active {
+    background: rgba(0, 113, 227, 0.08);
+    border-color: rgba(0, 113, 227, 0.2);
+}
+
+.nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.nav-item.active .nav-dot {
+    background: var(--accent-blue);
+    box-shadow: 0 0 12px var(--accent-blue);
+    transform: scale(1.4);
+}
+
+.nav-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.3s var(--ease-out-expo);
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+
+.nav-item:hover .nav-label,
+.nav-item.active .nav-label {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+@media (max-width: 1024px) {
+    .sidebar-nav { display: none; }
+}
+
+/* ============================================================
+   SLIDE COUNTER
+============================================================ */
+.slide-counter {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 100;
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--text-secondary);
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 10px 18px;
+    border-radius: 100px;
+    border: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.slide-counter .current {
+    color: var(--accent-blue);
+    font-weight: 700;
+}
+
+.slide-counter .divider {
+    width: 16px;
+    height: 1px;
+    background: var(--text-tertiary);
+}
+
+/* ============================================================
+   SLIDE LAYOUT
+============================================================ */
+.slide {
+    min-height: 100vh;
+    width: 100%;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-section) var(--space-container);
+    position: relative;
+    z-index: 2;
+}
+
+.slide-content {
+    max-width: 1200px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 3;
+}
+
+.slide-content.left-align {
+    align-items: flex-start;
+    text-align: left;
+}
+
+.split-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    width: 100%;
+    max-width: 1280px;
+}
+
+.split-layout.asymmetric {
+    grid-template-columns: 1.15fr 0.85fr;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+============================================================ */
+h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    font-optical-sizing: auto;
+    color: var(--text-primary);
+}
+
+h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    font-optical-sizing: auto;
+    color: var(--text-primary);
+}
+
+h3 {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--accent-blue);
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+}
+
+p, li {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.3vw, 1.15rem);
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    letter-spacing: -0.005em;
+}
+
+.eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+/* ============================================================
+   GRADIENT TEXT
+============================================================ */
+.gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.gradient-text-mixed {
+    background: var(--gradient-mixed);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* ============================================================
+   GLASS CARD (Light Mode)
+============================================================ */
+.glass-card {
+    background: var(--surface);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.4s var(--ease-out-expo);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.glass-card:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 113, 227, 0.1);
+}
+
+/* ============================================================
+   IMAGES
+============================================================ */
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    object-fit: contain;
+    display: block;
+}
+
+.teacher-img {
+    max-height: 75vh;
+    width: auto;
+    border-radius: 0;
+    box-shadow: none;
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.1)) drop-shadow(0 0 40px rgba(0, 113, 227, 0.1));
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.image-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-height: 28vh;
+    transition: transform 0.5s var(--ease-out-expo);
+}
+
+.image-grid img:hover {
+    transform: scale(1.03);
+}
+
+.caption {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-tertiary);
+    margin-top: 0.75rem;
+    letter-spacing: 0.01em;
+}
+
+/* ============================================================
+   LIST STYLES
+============================================================ */
+ul.clean-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+ul.clean-list li {
+    position: relative;
+    padding-left: 2rem;
+    color: var(--text-secondary);
+    font-size: clamp(1rem, 1.3vw, 1.15rem);
+}
+
+ul.clean-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 20px;
+    height: 2px;
+    background: var(--gradient-primary);
+    border-radius: 2px;
+}
+
+/* ============================================================
+   BENTO GRID (สำหรับสไลด์ 6 ขั้นตอน)
+============================================================ */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 1rem;
+    margin-top: 3rem;
+    width: 100%;
+}
+
+.bento-item {
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 2rem 1.75rem;
+    text-align: left;
+    transition: all 0.4s var(--ease-out-expo);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.bento-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.bento-item:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+.bento-item:hover::before { opacity: 1; }
+
+.bento-number {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--accent-blue);
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.bento-item h3 {
+    color: var(--text-primary);
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+}
+
+.bento-item p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ============================================================
+   APPLE BUTTON (Magnetic + Shimmer)
+============================================================ */
+.apple-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--gradient-primary);
+    color: #ffffff;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 1.25rem 2.75rem;
+    border-radius: 100px;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    transition: all 0.4s var(--ease-out-expo);
+    box-shadow: 0 8px 30px rgba(0, 113, 227, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.apple-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.4) 50%, transparent 80%);
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
+    z-index: 1;
+}
+
+.apple-button:hover::before {
+    transform: translateX(100%);
+}
+
+.apple-button:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 45px rgba(0, 113, 227, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+}
+
+.apple-button > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* ============================================================
+   VIDEO CONTAINER
+============================================================ */
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 16 / 9;
+    margin: 2rem auto 0;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #000;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 0 80px rgba(0, 113, 227, 0.05);
+    transition: all 0.4s var(--ease-out-expo);
+}
+
+.video-container:hover {
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.12), 0 0 100px rgba(0, 113, 227, 0.15);
+    transform: translateY(-4px);
+}
+
+.video-thumbnail {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.video-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+    box-shadow: none;
+    margin: 0;
+}
+
+.video-thumbnail .overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 3rem 1.5rem 2rem;
+    text-align: center;
+}
+
+.video-thumbnail .play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s var(--ease-out-expo);
+    box-shadow: 0 0 40px rgba(0, 113, 227, 0.4);
+}
+
+.video-thumbnail:hover .play-icon {
+    background: rgba(0, 113, 227, 0.7);
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 0 60px rgba(0, 113, 227, 0.8);
+}
+
+.video-thumbnail .play-icon svg {
+    width: 28px;
+    height: 28px;
+    fill: #fff;
+    margin-left: 4px;
+}
+
+.video-thumbnail .overlay p {
+    color: #fff;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+.video-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: none;
+}
+
+/* ============================================================
+   NUMBER COUNTER (สไลด์ 11)
+============================================================ */
+.big-number {
+    font-family: var(--font-display);
+    font-size: clamp(8rem, 25vw, 20rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    margin: 1rem 0;
+    filter: drop-shadow(0 0 40px rgba(0, 113, 227, 0.2));
+}
+
+/* ============================================================
+   QUALITATIVE CARDS
+============================================================ */
+.qual-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    margin-top: 3rem;
+    width: 100%;
+}
+
+.qual-card {
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: left;
+    transition: all 0.4s var(--ease-out-expo);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.qual-card:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+.qual-card h3 {
+    color: var(--accent-blue);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.qual-card p {
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* ============================================================
+   ANIMATIONS (Scroll-triggered)
+============================================================ */
+.animate {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
+    will-change: opacity, transform;
+}
+
+.slide.active .animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.slide.active .animate-delay-1 { transition-delay: 0.1s; }
+.slide.active .animate-delay-2 { transition-delay: 0.2s; }
+.slide.active .animate-delay-3 { transition-delay: 0.3s; }
+.slide.active .animate-delay-4 { transition-delay: 0.4s; }
+.slide.active .animate-delay-5 { transition-delay: 0.5s; }
+
+/* Stagger for list items */
+.stagger-list li {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo);
+}
+
+.slide.active .stagger-list li:nth-child(1) { transition-delay: 0.2s; opacity: 1; transform: translateX(0); }
+.slide.active .stagger-list li:nth-child(2) { transition-delay: 0.3s; opacity: 1; transform: translateX(0); }
+.slide.active .stagger-list li:nth-child(3) { transition-delay: 0.4s; opacity: 1; transform: translateX(0); }
+.slide.active .stagger-list li:nth-child(4) { transition-delay: 0.5s; opacity: 1; transform: translateX(0); }
+.slide.active .stagger-list li:nth-child(5) { transition-delay: 0.6s; opacity: 1; transform: translateX(0); }
+
+/* Parallax images */
+.parallax-img {
+    transition: transform 0.8s var(--ease-out-expo);
+}
+
+/* ============================================================
+   KEYBOARD HINT
+============================================================ */
+.keyboard-hint {
+    position: fixed;
+    bottom: 32px;
+    left: 32px;
+    z-index: 100;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text-tertiary);
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 10px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border-subtle);
+    font-family: var(--font-display);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.keyboard-hint kbd {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: var(--font-display);
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .keyboard-hint { display: none; }
+}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 1024px) {
+    .bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .slide {
+        padding: 3rem 1.5rem;
+    }
+    
+    .split-layout,
+    .split-layout.asymmetric {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        text-align: center;
+    }
+    
+    .slide-content.left-align {
+        align-items: center;
+        text-align: center;
+    }
+    
+    ul.clean-list li {
+        padding-left: 0;
+        padding-top: 1.5rem;
+    }
+    
+    ul.clean-list li::before {
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .bento-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .qual-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .image-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .teacher-img {
+        max-height: 45vh;
+    }
+    
+    .slide-counter,
+    .keyboard-hint {
+        display: none;
+    }
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     BACKGROUND LAYERS
+============================================================ -->
+<div class="gradient-mesh"></div>
+<div class="mesh-extra"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ============================================================
+     PROGRESS BAR
+============================================================ -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ============================================================
+     SIDEBAR NAVIGATION
+============================================================ -->
+<nav class="sidebar-nav" id="sidebarNav">
+    <div class="nav-item active" data-target="slide1"><span class="nav-dot"></span><span class="nav-label">หน้าปก</span></div>
+    <div class="nav-item" data-target="slide2"><span class="nav-dot"></span><span class="nav-label">ประเด็นท้าทาย</span></div>
+    <div class="nav-item" data-target="slide3"><span class="nav-dot"></span><span class="nav-label">สภาพปัญหา</span></div>
+    <div class="nav-item" data-target="slide4"><span class="nav-dot"></span><span class="nav-label">วิธีการดำเนินการ</span></div>
+    <div class="nav-item" data-target="slide5"><span class="nav-dot"></span><span class="nav-label">5 ขั้นตอน</span></div>
+    <div class="nav-item" data-target="slide6"><span class="nav-dot"></span><span class="nav-label">สื่อและนวัตกรรม</span></div>
+    <div class="nav-item" data-target="slide7"><span class="nav-dot"></span><span class="nav-label">ฝึกอ่าน-เขียน</span></div>
+    <div class="nav-item" data-target="slide8"><span class="nav-dot"></span><span class="nav-label">การนำไปใช้</span></div>
+    <div class="nav-item" data-target="slide9"><span class="nav-dot"></span><span class="nav-label">เกม Blooket</span></div>
+    <div class="nav-item" data-target="slide10"><span class="nav-dot"></span><span class="nav-label">การประเมิน</span></div>
+    <div class="nav-item" data-target="slide11"><span class="nav-dot"></span><span class="nav-label">ผลลัพธ์เชิงปริมาณ</span></div>
+    <div class="nav-item" data-target="slide12"><span class="nav-dot"></span><span class="nav-label">ผลลัพธ์เชิงคุณภาพ</span></div>
+    <div class="nav-item" data-target="slide13"><span class="nav-dot"></span><span class="nav-label">สรุปผล</span></div>
+    <div class="nav-item" data-target="slide14"><span class="nav-dot"></span><span class="nav-label">Live Demo</span></div>
+    <div class="nav-item" data-target="slide15"><span class="nav-dot"></span><span class="nav-label">ขอบคุณ</span></div>
+</nav>
+
+<!-- ============================================================
+     SLIDE COUNTER & KEYBOARD HINT
+============================================================ -->
+<div class="slide-counter">
+    <span class="current" id="currentSlide">01</span>
+    <span class="divider"></span>
+    <span>15</span>
+</div>
+
+<div class="keyboard-hint">
+    <kbd>↑</kbd> <kbd>↓</kbd> เลื่อนสไลด์
+</div>
+
+<!-- ============================================================
+     SLIDE 1: COVER (ลบ Eyebrow ออกแล้ว)
+============================================================ -->
+<section class="slide" id="slide1" data-title="หน้าปก">
+    <div class="split-layout asymmetric">
+        <div class="slide-content left-align animate animate-delay-1">
+            <!-- ลบ Eyebrow ที่มีข้อความ "รายงานผลการปฏิบัติงาน · ครูชำนาญการ" ออกแล้ว -->
+            <h1 class="gradient-text">การพัฒนาความสามารถในการอ่านและเข้าใจความหมายคำศัพท์ภาษาอังกฤษ</h1>
+            <p style="font-size: 1.35rem; color: var(--text-primary); margin-top: 1.5rem; font-weight: 300; line-height: 1.5;">
+                โดยใช้การเทียบเสียงร่วมกับเกม Blooket<br>สำหรับนักเรียนชั้นประถมศึกษาปีที่ 5–6
+            </p>
+            <p style="margin-top: 2.5rem; font-size: 1.05rem; font-weight: 500; color: var(--accent-blue); letter-spacing: 0.01em;">
+                นายศิริศักดิ์ จันทร์อ้าย · โรงเรียนบ้านถิ่นสำราญ
+            </p>
+        </div>
+        <div class="slide-content animate animate-delay-2" style="justify-content: flex-end; align-items: center;">
+            <img src="img_teacher.png" alt="นายศิริศักดิ์ จันทร์อ้าย" class="teacher-img parallax-img">
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 2: CHALLENGE
+============================================================ -->
+<section class="slide" id="slide2" data-title="ประเด็นท้าทาย">
+    <div class="split-layout">
+        <div class="slide-content left-align">
+            <span class="eyebrow animate">01 · The Challenge</span>
+            <h2 class="animate animate-delay-1">ประเด็น<span class="gradient-text">ท้าทาย</span></h2>
+            <ul class="clean-list stagger-list">
+                <li>นักเรียนชั้น ป.5–6 (คละระดับ, 9 คน) มีพื้นฐานภาษาอังกฤษแตกต่างกัน</li>
+                <li>ขาดความมั่นใจในการอ่านคำศัพท์ เพราะเชื่อมโยงตัวอักษรกับเสียงไม่ได้</li>
+                <li>เมื่ออ่านไม่ได้ → ไม่เข้าใจความหมาย → ไม่เข้าใจประโยค</li>
+                <li>เกิดเจตคติว่า "ภาษาอังกฤษยาก" และไม่อยากมีส่วนร่วม</li>
+            </ul>
+        </div>
+        <div class="slide-content animate animate-delay-2">
+            <img src="img_read_1.jpg" alt="นักเรียนอ่าน" class="parallax-img">
+            <p class="caption">นักเรียนฝึกอ่านคำศัพท์ในชั้นเรียน</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 3: PROBLEM
+============================================================ -->
+<section class="slide" id="slide3" data-title="สภาพปัญหา">
+    <div class="split-layout">
+        <div class="slide-content animate animate-delay-2">
+            <img src="img_phonics_1.jpg" alt="เขียนตามคำบอก" class="parallax-img">
+            <p class="caption">บันทึกการเขียนตามคำบอก (Dictation)</p>
+        </div>
+        <div class="slide-content left-align">
+            <span class="eyebrow animate">02 · The Problem</span>
+            <h2 class="animate animate-delay-1">สภาพ<span class="gradient-text">ปัญหา</span></h2>
+            <div class="animate animate-delay-2" style="margin-bottom: 1.25rem;">
+                <p style="color: var(--text-primary); font-weight: 500; margin-bottom: 0.25rem;">ปัญหา</p>
+                <p>นักเรียนอ่านคำศัพท์ไม่ได้ → ไม่เข้าใจความหมาย → ไม่เข้าใจประโยค</p>
+            </div>
+            <div class="animate animate-delay-3" style="margin-bottom: 1.25rem;">
+                <p style="color: var(--text-primary); font-weight: 500; margin-bottom: 0.25rem;">สาเหตุ</p>
+                <p>การเชื่อมโยงตัวอักษรกับเสียง (Phonics) เป็นจุดอ่อน</p>
+            </div>
+            <div class="animate animate-delay-4" style="margin-bottom: 1.25rem;">
+                <p style="color: var(--text-primary); font-weight: 500; margin-bottom: 0.25rem;">ผลกระทบ</p>
+                <p>ขาดความมั่นใจ, เจตคติเชิงลบ, ไม่มีส่วนร่วม</p>
+            </div>
+            <div class="glass-card animate animate-delay-5" style="margin-top: 1.5rem; padding: 1.5rem;">
+                <p style="color: var(--accent-blue); font-weight: 500; margin: 0;">
+                    <strong>แนวทางแก้ไข</strong> — ไม่เน้นท่องจำ แต่เริ่มจาก "อ่านออก → เข้าใจความหมาย → นำไปใช้"
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 4: METHOD OVERVIEW (BENTO GRID)
+============================================================ -->
+<section class="slide" id="slide4" data-title="วิธีการดำเนินการ">
+    <div class="slide-content">
+        <span class="eyebrow animate">03 · Methodology</span>
+        <h2 class="animate animate-delay-1">วิธีการดำเนินการ<span class="gradient-text">ให้บรรลุผล</span></h2>
+        <div class="bento-grid animate animate-delay-2">
+            <div class="bento-item">
+                <span class="bento-number">01</span>
+                <h3>ศึกษาและวิเคราะห์</h3>
+                <p>วิเคราะห์หลักสูตรและบริบทผู้เรียน</p>
+            </div>
+            <div class="bento-item">
+                <span class="bento-number">02</span>
+                <h3>วิเคราะห์ปัญหา</h3>
+                <p>กำหนดแนวทางและจุดเริ่มต้น</p>
+            </div>
+            <div class="bento-item">
+                <span class="bento-number">03</span>
+                <h3>ออกแบบกระบวนการ</h3>
+                <p>5 ขั้นตอนการเรียนรู้</p>
+            </div>
+            <div class="bento-item">
+                <span class="bento-number">04</span>
+                <h3>จัดกิจกรรม</h3>
+                <p>ฝึกปฏิบัติจริงในชั้นเรียน</p>
+            </div>
+            <div class="bento-item">
+                <span class="bento-number">05</span>
+                <h3>เกม Blooket</h3>
+                <p>ฝึกซ้ำและทบทวน</p>
+            </div>
+            <div class="bento-item">
+                <span class="bento-number">06</span>
+                <h3>วัดและประเมินผล</h3>
+                <p>จากการปฏิบัติจริง</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 5: 5 STEPS
+============================================================ -->
+<section class="slide" id="slide5" data-title="5 ขั้นตอน">
+    <div class="split-layout">
+        <div class="slide-content left-align">
+            <span class="eyebrow animate">04 · The Process</span>
+            <h2 class="animate animate-delay-1">กระบวนการจัดการเรียนรู้ <span class="gradient-text">5 ขั้นตอน</span></h2>
+            <ul class="clean-list stagger-list">
+                <li><strong style="color:var(--text-primary);">เปิดใจ</strong> — สร้างบรรยากาศเป็นมิตร ลดความกลัว</li>
+                <li><strong style="color:var(--text-primary);">เทียบเสียง</strong> — ใช้ภาษาไทยเป็นสะพานเชื่อมตัวอักษรกับเสียง</li>
+                <li><strong style="color:var(--text-primary);">อ่านและเชื่อมความหมาย</strong> — ฝึกอ่าน สะกด และจับคู่ความหมาย</li>
+                <li><strong style="color:var(--text-primary);">ฝึกซ้ำด้วย Blooket</strong> — ทบทวนผ่านเกมที่หลากหลาย</li>
+                <li><strong style="color:var(--text-primary);">นำไปใช้</strong> — อ่านและทำความเข้าใจประโยค</li>
+            </ul>
+        </div>
+        <div class="slide-content animate animate-delay-2">
+            <img src="img_phonics_2.jpg" alt="เทียบเสียง" class="parallax-img">
+            <p class="caption">การเทียบเสียงภาษาไทย-อังกฤษ</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 6: TOOLS
+============================================================ -->
+<section class="slide" id="slide6" data-title="สื่อและนวัตกรรม">
+    <div class="slide-content">
+        <span class="eyebrow animate">05 · Tools</span>
+        <h2 class="animate animate-delay-1">สื่อและ<span class="gradient-text">นวัตกรรม</span>ที่ใช้</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; width: 100%;" class="animate animate-delay-2">
+            <div class="glass-card" style="text-align: center;">
+                <img src="img_group.jpg" alt="ใบความรู้" style="width: 100%; height: 200px; object-fit: cover; margin-bottom: 1.5rem;">
+                <h3 style="color: var(--text-primary);">ใบความรู้เทียบเสียง</h3>
+                <p style="font-size: 0.95rem;">ใช้ภาษาไทยเป็นสะพานช่วยอ่าน</p>
+            </div>
+            <div class="glass-card" style="text-align: center;">
+                <img src="img_web_6.jpg" alt="Blooket" style="width: 100%; height: 200px; object-fit: cover; margin-bottom: 1.5rem;">
+                <h3 style="color: var(--text-primary);">เกม Blooket</h3>
+                <p style="font-size: 0.95rem;">ฝึกซ้ำในบรรยากาศสนุกสนาน</p>
+            </div>
+            <div class="glass-card" style="text-align: center;">
+                <img src="img_web_1.jpg" alt="เว็บไซต์" style="width: 100%; height: 200px; object-fit: cover; margin-bottom: 1.5rem;">
+                <h3 style="color: var(--text-primary);">เว็บไซต์ที่พัฒนาขึ้นเอง</h3>
+                <p style="font-size: 0.95rem;"><a href="https://tum-service.github.io/1111/" target="_blank" style="color: var(--accent-blue); text-decoration: none;">tum-service.github.io/1111/</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 7: PRACTICE 1
+============================================================ -->
+<section class="slide" id="slide7" data-title="ฝึกอ่าน-เขียน">
+    <div class="split-layout">
+        <div class="slide-content left-align">
+            <span class="eyebrow animate">06 · Practice</span>
+            <h2 class="animate animate-delay-1">การฝึกปฏิบัติจริง: <span class="gradient-text">การอ่านและการเขียน</span></h2>
+            <ul class="clean-list stagger-list">
+                <li>ฝึกอ่านคำศัพท์เป็นรายบุคคลและร่วมกัน</li>
+                <li>ฝึกสะกดคำและเชื่อมโยงกับความหมาย</li>
+                <li>ฝึกเขียนตามคำบอก (Dictation)</li>
+                <li>ปรับระดับการช่วยเหลือตามความสามารถของแต่ละคน</li>
+            </ul>
+        </div>
+        <div class="image-grid animate animate-delay-2">
+            <img src="img_read_1.jpg" alt="อ่าน 1" class="parallax-img">
+            <img src="img_read_2.jpg" alt="อ่าน 2" class="parallax-img">
+            <img src="img_phonics_3.jpg" alt="เทียบเสียง 1" class="parallax-img">
+            <img src="img_phonics_1.jpg" alt="เทียบเสียง 2" class="parallax-img">
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 8: PRACTICE 2 + VIDEO
+============================================================ -->
+<section class="slide" id="slide8" data-title="การนำไปใช้">
+    <div class="slide-content" style="max-width: 1000px;">
+        <span class="eyebrow animate">07 · Application</span>
+        <h2 class="animate animate-delay-1">การฝึกปฏิบัติจริง: <span class="gradient-text">การนำไปใช้</span></h2>
+        <p class="animate animate-delay-2" style="margin-bottom: 2rem;">ฝึกแต่งประโยคจากคำศัพท์ที่เรียนรู้ · ฝึกอ่านประโยคที่ตนเองแต่งขึ้น · ฝึกแปลความหมาย</p>
+        
+        <div class="image-grid animate animate-delay-3" style="grid-template-columns: 1fr 1fr; margin-bottom: 1rem; max-width: 800px;">
+            <img src="img_sentence_1.jpg" alt="แต่งประโยค 1" class="parallax-img">
+            <img src="img_sentence_2.jpg" alt="แต่งประโยค 2" class="parallax-img">
+        </div>
+
+        <div class="video-container animate animate-delay-4">
+            <div class="video-thumbnail" id="videoThumbnail" onclick="playVideo()">
+                <img src="img_student_reading.jpg" alt="คลิกเพื่อเปิดวิดีโอ">
+                <div class="play-icon">
+                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <div class="overlay">
+                    <p>คลิกเพื่อเล่นวิดีโอ — นักเรียนสอบอ่านประโยคภาษาอังกฤษ</p>
+                </div>
+            </div>
+            <iframe id="videoFrame" class="video-frame" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 9: BLOOKET
+============================================================ -->
+<section class="slide" id="slide9" data-title="เกม Blooket">
+    <div class="split-layout">
+        <div class="slide-content left-align">
+            <span class="eyebrow animate">08 · Blooket</span>
+            <h2 class="animate animate-delay-1">เกม <span class="gradient-text">Blooket</span></h2>
+            <p class="animate animate-delay-2" style="color: var(--text-primary); font-weight: 400; margin-bottom: 1.5rem;">เครื่องมือฝึกซ้ำและทบทวน</p>
+            <ul class="clean-list stagger-list">
+                <li>จัดทำชุดคำถามจากคำศัพท์ในบทเรียน</li>
+                <li>ใช้รูปแบบเกมที่หลากหลายเพื่อไม่ให้จำเจ</li>
+                <li>เป้าหมาย: เพิ่มโอกาสพบคำศัพท์ซ้ำ, กระตุ้นการมีส่วนร่วม</li>
+                <li>ไม่ใช้ผลเกมเพียงอย่างเดียว ในการตัดสินการเรียนรู้</li>
+                <li>แจกรหัสเกมผ่านช่องทางห้องเรียน เพื่อฝึกทบทวนนอกเวลา</li>
+            </ul>
+        </div>
+        <div class="slide-content animate animate-delay-3">
+            <img src="img_web_6.jpg" alt="Blooket" class="parallax-img">
+            <p class="caption">หน้าจอจัดการชุดคำถามบน Blooket</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 10: EVALUATION
+============================================================ -->
+<section class="slide" id="slide10" data-title="การประเมิน">
+    <div class="slide-content" style="max-width: 900px;">
+        <span class="eyebrow animate">09 · Evaluation</span>
+        <h2 class="animate animate-delay-1">การวัดและประเมินผล <span class="gradient-text">จากการปฏิบัติจริง</span></h2>
+        <div class="glass-card animate animate-delay-2" style="text-align: left; margin-top: 2rem; padding: 2.5rem;">
+            <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 1.25rem; font-size: 1.15rem;">วิธีประเมิน</p>
+            <ul class="clean-list stagger-list">
+                <li>สังเกตการอ่านออกเสียง</li>
+                <li>การบอกและเชื่อมโยงความหมาย</li>
+                <li>การอ่านและแปลประโยค</li>
+                <li>ผลงานและพฤติกรรมการมีส่วนร่วม</li>
+            </ul>
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-subtle);">
+                <p style="color: var(--accent-blue); font-weight: 500; margin: 0;">
+                    <strong>การปรับปรุง</strong> — นำผลมาปรับการช่วยเหลือและฝึกซ้ำให้เหมาะกับแต่ละคน
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 11: QUANTITATIVE RESULTS
+============================================================ -->
+<section class="slide" id="slide11" data-title="ผลลัพธ์เชิงปริมาณ">
+    <div class="slide-content">
+        <span class="eyebrow animate">10 · Quantitative</span>
+        <h2 class="animate animate-delay-1">ผลลัพธ์ที่คาดหวัง: <span class="gradient-text">เชิงปริมาณ</span></h2>
+        <div class="big-number animate animate-delay-2" id="counterNumber" data-target="9">0</div>
+        <p class="animate animate-delay-3" style="font-size: 1.5rem; color: var(--text-primary); font-weight: 300;">นักเรียนชั้น ป.5–6 จำนวน 9 คน</p>
+        <p class="animate animate-delay-4" style="max-width: 700px; margin-top: 1rem;">
+            ได้รับการพัฒนาความสามารถในการอ่านและเข้าใจความหมายคำศัพท์ ผ่านกระบวนการใช้การเทียบเสียงร่วมกับเกม Blooket
+        </p>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 12: QUALITATIVE RESULTS
+============================================================ -->
+<section class="slide" id="slide12" data-title="ผลลัพธ์เชิงคุณภาพ">
+    <div class="slide-content">
+        <span class="eyebrow animate">11 · Qualitative</span>
+        <h2 class="animate animate-delay-1">ผลลัพธ์ที่คาดหวัง: <span class="gradient-text">เชิงคุณภาพ</span></h2>
+        <div class="qual-grid animate animate-delay-2">
+            <div class="qual-card">
+                <h3>อ่านได้ดีขึ้น</h3>
+                <p>เชื่อมโยงตัวอักษรกับเสียงได้อย่างมั่นใจ</p>
+            </div>
+            <div class="qual-card">
+                <h3>เข้าใจความหมาย</h3>
+                <p>บอกและอธิบายความหมายคำศัพท์ได้</p>
+            </div>
+            <div class="qual-card">
+                <h3>นำไปใช้ได้</h3>
+                <p>อ่านและทำความเข้าใจประโยคได้</p>
+            </div>
+            <div class="qual-card">
+                <h3>เจตคติที่ดี</h3>
+                <p>มั่นใจขึ้น กล้าออกเสียง และมีส่วนร่วม</p>
+            </div>
+        </div>
+        <p class="animate animate-delay-3" style="margin-top: 2.5rem; color: var(--accent-blue); font-weight: 400; font-size: 1.15rem;">
+            มองภาษาอังกฤษเป็นทักษะที่ฝึกฝนได้ — ไม่ใช่ตัวตัดสินความฉลาด
+        </p>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 13: SUMMARY
+============================================================ -->
+<section class="slide" id="slide13" data-title="สรุปผล">
+    <div class="split-layout">
+        <div class="slide-content left-align">
+            <span class="eyebrow animate">12 · Summary</span>
+            <h2 class="animate animate-delay-1">สรุปผล<span class="gradient-text">การดำเนินงาน</span></h2>
+            <ul class="clean-list stagger-list">
+                <li>แก้ปัญหาที่ต้นเหตุ: "อ่านออก → เข้าใจ → นำไปใช้"</li>
+                <li>ใช้ <strong style="color:var(--text-primary);">การเทียบเสียง</strong> เป็นสะพานเชื่อม</li>
+                <li>ใช้ <strong style="color:var(--text-primary);">เกม Blooket</strong> เป็นเครื่องมือฝึกซ้ำ</li>
+                <li>ใช้ <strong style="color:var(--text-primary);">เว็บไซต์ที่พัฒนาขึ้นเอง</strong> เป็นแหล่งเรียนรู้เพิ่มเติม</li>
+                <li>นักเรียนมีความมั่นใจและเจตคติที่ดีขึ้น</li>
+            </ul>
+        </div>
+        <div class="slide-content animate animate-delay-2">
+            <img src="img_web_1.jpg" alt="เว็บไซต์" class="parallax-img">
+            <p class="caption">เว็บไซต์คลังคำศัพท์ที่พัฒนาขึ้นเอง</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 14: LIVE DEMO
+============================================================ -->
+<section class="slide" id="slide14" data-title="Live Demo">
+    <div class="slide-content">
+        <span class="eyebrow animate">13 · Live Demo</span>
+        <h2 class="animate animate-delay-1">การสาธิต<span class="gradient-text">เว็บไซต์และเกม</span></h2>
+        
+        <a href="https://tum-service.github.io/1111/" target="_blank" class="apple-button animate animate-delay-2">
+            <span>🌐 เปิดเว็บไซต์คลังคำศัพท์</span>
+        </a>
+
+        <div class="image-grid animate animate-delay-3" style="grid-template-columns: repeat(3, 1fr); margin-top: 2rem; width: 100%;">
+            <img src="img_web_1.jpg" alt="หน้าหลัก">
+            <img src="img_web_2.jpg" alt="เกม 1">
+            <img src="img_web_3.jpg" alt="เกม 2">
+            <img src="img_web_4.jpg" alt="เกม 3">
+            <img src="img_web_5.jpg" alt="เกม 4">
+            <img src="img_web_6.jpg" alt="Blooket">
+        </div>
+        <p class="animate animate-delay-4" style="margin-top: 2rem; color: var(--text-secondary);">
+            เปิดโอกาสให้คณะกรรมการได้ทดลองกดใช้งานจริง
+        </p>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 15: THANK YOU
+============================================================ -->
+<section class="slide" id="slide15" data-title="ขอบคุณ">
+    <div class="slide-content">
+        <h1 class="gradient-text animate" style="font-size: clamp(3rem, 8vw, 7rem);">ขอบคุณครับ</h1>
+        <p class="animate animate-delay-1" style="font-size: 1.4rem; color: var(--text-primary); font-weight: 300; margin-top: 1rem;">ขอบคุณคณะกรรมการที่รับฟัง</p>
+        <p class="animate animate-delay-2" style="margin-top: 0.5rem;">ยินดีรับฟังข้อเสนอแนะ</p>
+        <p class="animate animate-delay-3" style="margin-top: 3rem; color: var(--accent-blue); font-weight: 500;">นายศิริศักดิ์ จันทร์อ้าย · โรงเรียนบ้านถิ่นสำราญ</p>
+        <img src="img_group.jpg" alt="ภาพหมู่" class="animate animate-delay-4 parallax-img" style="max-height: 25vh; margin-top: 2rem; border-radius: 16px;">
+    </div>
+</section>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const slides = document.querySelectorAll('.slide');
+    const navItems = document.querySelectorAll('.nav-item');
+    const progressBar = document.getElementById('progressBar');
+    const currentSlideEl = document.getElementById('currentSlide');
+    const counterNumber = document.getElementById('counterNumber');
+    const cursorGlow = document.getElementById('cursorGlow');
+    const sidebarNav = document.getElementById('sidebarNav');
+    
+    let currentSlideIndex = 0;
+    let counterAnimated = false;
+
+    // ============================================================
+    // 1. INTERSECTION OBSERVER — Animations & Active State
+    // ============================================================
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                const index = Array.from(slides).indexOf(entry.target);
+                currentSlideIndex = index;
+                
+                // Update nav
+                navItems.forEach((item, i) => {
+                    item.classList.toggle('active', i === index);
+                });
+                
+                // Update slide counter
+                currentSlideEl.textContent = String(index + 1).padStart(2, '0');
+                
+                // Update progress bar
+                progressBar.style.width = ((index + 1) / slides.length * 100) + '%';
+
+                // Show sidebar after first slide
+                if (index > 0) sidebarNav.classList.add('visible');
+
+                // Animate counter number when slide 11 appears
+                if (entry.target.id === 'slide11' && !counterAnimated) {
+                    animateCounter();
+                    counterAnimated = true;
+                }
+            }
+        });
+    }, { threshold: 0.5 });
+
+    slides.forEach(slide => observer.observe(slide));
+
+    // ============================================================
+    // 2. COUNTER ANIMATION (0 → 9)
+    // ============================================================
+    function animateCounter() {
+        if (!counterNumber) return;
+        const target = parseInt(counterNumber.dataset.target);
+        const duration = 2000;
+        const start = performance.now();
+        
+        function update(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+            counterNumber.textContent = Math.floor(eased * target);
+            if (progress < 1) requestAnimationFrame(update);
+            else counterNumber.textContent = target;
+        }
+        requestAnimationFrame(update);
+    }
+
+    // ============================================================
+    // 3. CURSOR GLOW
+    // ============================================================
+    let mouseX = 0, mouseY = 0;
+    let glowX = 0, glowY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+    
+    function animateGlow() {
+        glowX += (mouseX - glowX) * 0.08;
+        glowY += (mouseY - glowY) * 0.08;
+        cursorGlow.style.left = glowX + 'px';
+        cursorGlow.style.top = glowY + 'px';
+        requestAnimationFrame(animateGlow);
+    }
+    animateGlow();
+
+    // ============================================================
+    // 4. SIDEBAR NAVIGATION CLICK
+    // ============================================================
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const targetId = item.dataset.target;
+            document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // ============================================================
+    // 5. KEYBOARD NAVIGATION
+    // ============================================================
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+            e.preventDefault();
+            const next = Math.min(currentSlideIndex + 1, slides.length - 1);
+            slides[next].scrollIntoView({ behavior: 'smooth' });
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+            e.preventDefault();
+            const prev = Math.max(currentSlideIndex - 1, 0);
+            slides[prev].scrollIntoView({ behavior: 'smooth' });
+        } else if (e.key === 'Home') {
+            e.preventDefault();
+            slides[0].scrollIntoView({ behavior: 'smooth' });
+        } else if (e.key === 'End') {
+            e.preventDefault();
+            slides[slides.length - 1].scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+
+    // ============================================================
+    // 6. MAGNETIC BUTTON EFFECT
+    // ============================================================
+    document.querySelectorAll('.apple-button').forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15 - 3}px) scale(1.02)`;
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = '';
+        });
+    });
+
+    // ============================================================
+    // 7. PARALLAX IMAGES
+    // ============================================================
+    window.addEventListener('scroll', () => {
+        document.querySelectorAll('.parallax-img').forEach(img => {
+            const rect = img.getBoundingClientRect();
+            const centerY = rect.top + rect.height / 2;
+            const offset = (centerY - window.innerHeight / 2) * 0.03;
+            img.style.transform = `translateY(${offset}px)`;
+        });
+    }, { passive: true });
+
+});
+
+// ============================================================
+// 8. VIDEO PLAYER (Inline)
+// ============================================================
+function playVideo() {
+    const thumbnail = document.getElementById('videoThumbnail');
+    const frame = document.getElementById('videoFrame');
+    const fileId = "170huuZcEl-Tc05jCV0zCy385wRQC-84x";
+    
+    thumbnail.style.opacity = '0';
+    setTimeout(() => {
+        thumbnail.style.display = 'none';
+        frame.style.display = 'block';
+        frame.src = `https://drive.google.com/file/d/${fileId}/preview?autoplay=1`;
+    }, 200);
+}
+</script>
+
+</body>
+</html>
