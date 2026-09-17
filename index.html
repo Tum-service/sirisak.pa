@@ -130,6 +130,38 @@ body::before {
 .sound-toggle.playing { animation: soundPulse 0.5s var(--ease-out-back); }
 @keyframes soundPulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
+/* ★★★ FULLSCREEN TOGGLE (NEW) ★★★ */
+.fullscreen-toggle {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    z-index: 2000;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%);
+    color: var(--primary-navy);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s var(--ease-out-expo);
+    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 4px 8px rgba(15, 23, 42, 0.06), 0 12px 24px -4px rgba(30, 58, 138, 0.15);
+}
+
+.fullscreen-toggle:hover { transform: translateY(-4px) scale(1.08); color: var(--primary-navy-light); border-color: rgba(59, 130, 246, 0.4); }
+.fullscreen-toggle:active { transform: translateY(-2px) scale(1.04); }
+.fullscreen-toggle svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.fullscreen-toggle .icon-compress { display: none; }
+.fullscreen-toggle.active .icon-expand { display: none; }
+.fullscreen-toggle.active .icon-compress { display: block; }
+
+@media (max-width: 768px) {
+    .fullscreen-toggle { top: 16px; left: 16px; width: 46px; height: 46px; }
+    .fullscreen-toggle svg { width: 20px; height: 20px; }
+}
+
 /* PROGRESS BAR */
 .progress-bar {
     position: fixed;
@@ -1458,6 +1490,16 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 </head>
 <body>
 
+<!-- ★★★ ปุ่มเต็มหน้าจอ (Fullscreen Button) ★★★ -->
+<button class="fullscreen-toggle" id="fullscreenToggle" aria-label="เปิด/ปิดเต็มหน้าจอ">
+    <svg class="icon-expand" viewBox="0 0 24 24">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+    </svg>
+    <svg class="icon-compress" viewBox="0 0 24 24">
+        <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+    </svg>
+</button>
+
 <button class="sound-toggle" id="soundToggle" aria-label="เปิด/ปิดเสียง">
     <svg class="icon-sound" viewBox="0 0 24 24">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
@@ -1991,10 +2033,50 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', initOnce);
 });
 
+/* ★★★ FULLSCREEN SCRIPT (NEW) ★★★ */
+document.addEventListener('DOMContentLoaded', () => {
+    const fullscreenToggle = document.getElementById('fullscreenToggle');
+    if (!fullscreenToggle) return;
+
+    fullscreenToggle.addEventListener('click', () => {
+        SoundEngine.play('click');
+        
+        const doc = document;
+        const docEl = doc.documentElement;
+
+        const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+        const cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+        if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+            if (requestFullScreen) {
+                requestFullScreen.call(docEl);
+            }
+        } else {
+            if (cancelFullScreen) {
+                cancelFullScreen.call(doc);
+            }
+        }
+    });
+
+    function updateFullscreenIcon() {
+        const isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+        if (isFullscreen) {
+            fullscreenToggle.classList.add('active');
+        } else {
+            fullscreenToggle.classList.remove('active');
+        }
+    }
+
+    document.addEventListener('fullscreenchange', updateFullscreenIcon);
+    document.addEventListener('mozfullscreenchange', updateFullscreenIcon);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+    document.addEventListener('MSFullscreenChange', updateFullscreenIcon);
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
     const hoverTargets = document.querySelectorAll(
-        '.nav-item, .cycle-item, .video-tab-btn, .photo-frame, .btn-primary, .card-3d, .stack-item, .lightbox-nav, .lightbox-close, .step-modal-close, .sound-toggle'
+        '.nav-item, .cycle-item, .video-tab-btn, .photo-frame, .btn-primary, .card-3d, .stack-item, .lightbox-nav, .lightbox-close, .step-modal-close, .sound-toggle, .fullscreen-toggle'
     );
     if (!isTouchDevice) {
         hoverTargets.forEach(el => {
@@ -2006,7 +2088,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-    const clickTargets = document.querySelectorAll('.nav-item, .video-tab-btn, .photo-frame, .btn-primary, .card-3d, .stack-item, .sound-toggle');
+    const clickTargets = document.querySelectorAll('.nav-item, .video-tab-btn, .photo-frame, .btn-primary, .card-3d, .stack-item, .sound-toggle, .fullscreen-toggle');
     clickTargets.forEach(el => {
         el.addEventListener('click', () => {
             if (el.classList.contains('lightbox-nav') || el.classList.contains('lightbox-close') || el.classList.contains('step-modal-close')) return;
