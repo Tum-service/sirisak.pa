@@ -2,7 +2,8 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a">
 <title>การพัฒนาความสามารถในการอ่านและเข้าใจความหมายคำศัพท์ภาษาอังกฤษ</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -60,10 +61,24 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
-    line-height: 1.75;
+    line-height: 1.7;
     background: var(--bg-base);
-    word-wrap: break-word;
+    /* ★ ป้องกันคำขาดกลางคำ - ภาษาไทยและอังกฤษ ★ */
+    word-break: keep-all;
     overflow-wrap: break-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+}
+
+/* ★ Global rule: ห้ามคำขาดกลางคำ ★ */
+p, li, h1, h2, h3, h4, h5, h6, span, a, div, .card-text, .stack-content p, .qual-hero-desc,
+.cycle-sub, .cycle-title, .caption, .step-modal-body p, .step-modal-body li {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    text-wrap: pretty;
 }
 
 body::before {
@@ -102,66 +117,29 @@ body::before {
     align-items: center;
     justify-content: center;
     transition: all 0.4s var(--ease-out-expo);
-    box-shadow:
-        inset 0 1.5px 0 rgba(255, 255, 255, 1),
-        0 4px 8px rgba(15, 23, 42, 0.06),
-        0 12px 24px -4px rgba(30, 58, 138, 0.15),
-        0 24px 48px -8px rgba(30, 58, 138, 0.20);
+    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 4px 8px rgba(15, 23, 42, 0.06), 0 12px 24px -4px rgba(30, 58, 138, 0.15);
 }
 
-.sound-toggle:hover {
-    transform: translateY(-4px) scale(1.08);
-    color: var(--primary-navy-light);
-    border-color: rgba(59, 130, 246, 0.4);
-    box-shadow:
-        inset 0 1.5px 0 rgba(255, 255, 255, 1),
-        0 8px 16px rgba(15, 23, 42, 0.10),
-        0 20px 40px -6px rgba(30, 58, 138, 0.30),
-        0 40px 80px -16px rgba(59, 130, 246, 0.35);
-}
-
+.sound-toggle:hover { transform: translateY(-4px) scale(1.08); color: var(--primary-navy-light); border-color: rgba(59, 130, 246, 0.4); }
 .sound-toggle:active { transform: translateY(-2px) scale(1.04); }
-
-.sound-toggle svg {
-    width: 26px;
-    height: 26px;
-    stroke: currentColor;
-    stroke-width: 2;
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: opacity 0.3s ease;
-}
-
+.sound-toggle svg { width: 26px; height: 26px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .sound-toggle .icon-muted { display: none; }
 .sound-toggle.muted .icon-sound { display: none; }
 .sound-toggle.muted .icon-muted { display: block; }
 .sound-toggle.muted { color: var(--text-muted); }
-
 .sound-toggle.playing { animation: soundPulse 0.5s var(--ease-out-back); }
-@keyframes soundPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.15); }
-    100% { transform: scale(1); }
-}
-
-@media (max-width: 768px) {
-    .sound-toggle { bottom: 16px; right: 16px; width: 48px; height: 48px; }
-    .sound-toggle svg { width: 22px; height: 22px; }
-}
+@keyframes soundPulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
 /* PROGRESS BAR */
 .progress-bar {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     height: 4px;
     background: linear-gradient(90deg, var(--primary-navy) 0%, var(--primary-navy-light) 50%, var(--accent-gold-light) 100%);
     z-index: 1000;
     width: 0%;
     transition: width 0.15s var(--ease-out-expo);
-    box-shadow: 0 0 12px rgba(30, 58, 138, 0.6), 0 0 24px rgba(59, 130, 246, 0.4);
-    border-radius: 0 4px 4px 0;
+    box-shadow: 0 0 12px rgba(30, 58, 138, 0.6);
 }
 
 /* SIDEBAR NAV */
@@ -204,11 +182,7 @@ body::before {
 
 .nav-item:hover::before { opacity: 1; }
 .nav-item:hover { transform: translateX(8px); }
-
-.nav-item.active {
-    background: rgba(30, 58, 138, 0.10);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 8px rgba(30, 58, 138, 0.08);
-}
+.nav-item.active { background: rgba(30, 58, 138, 0.10); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7); }
 
 .nav-dot {
     width: 9px;
@@ -222,17 +196,8 @@ body::before {
     z-index: 1;
 }
 
-.nav-item:hover .nav-dot {
-    background: var(--primary-navy-light);
-    transform: scale(1.3);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95), 0 0 12px var(--primary-navy-light);
-}
-
-.nav-item.active .nav-dot {
-    background: var(--primary-navy);
-    transform: scale(1.4);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95), 0 0 14px var(--primary-navy);
-}
+.nav-item:hover .nav-dot { background: var(--primary-navy-light); transform: scale(1.3); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95), 0 0 12px var(--primary-navy-light); }
+.nav-item.active .nav-dot { background: var(--primary-navy); transform: scale(1.4); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95), 0 0 14px var(--primary-navy); }
 
 .nav-label {
     font-size: 13px;
@@ -256,6 +221,7 @@ body::before {
 .slide {
     min-height: 100vh;
     min-height: 100dvh;
+    min-height: 100svh;
     width: 100%;
     scroll-snap-align: start;
     display: flex;
@@ -263,6 +229,8 @@ body::before {
     justify-content: center;
     align-items: center;
     padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 4vw, 4rem);
+    padding-top: max(clamp(2rem, 5vw, 4rem), env(safe-area-inset-top));
+    padding-bottom: max(clamp(2rem, 5vw, 4rem), env(safe-area-inset-bottom));
     position: relative;
     z-index: 2;
     perspective: 1600px;
@@ -296,10 +264,10 @@ body::before {
 /* TYPOGRAPHY */
 h1 {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 4.5vw, 4rem);
+    font-size: clamp(1.75rem, 4.5vw, 3.5rem);
     font-weight: 800;
     letter-spacing: -0.025em;
-    line-height: 1.1;
+    line-height: 1.15;
     margin-bottom: 1.25rem;
     color: var(--primary-navy-dark);
     text-wrap: balance;
@@ -308,19 +276,33 @@ h1 {
 
 h2 {
     font-family: var(--font-display);
-    font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+    font-size: clamp(1.5rem, 3.2vw, 2.6rem);
     font-weight: 800;
     letter-spacing: -0.02em;
-    line-height: 1.2;
+    line-height: 1.25;
     margin-bottom: 1.5rem;
     color: var(--primary-navy);
     text-wrap: balance;
     text-shadow: 0 1px 0 rgba(255,255,255,0.95), 0 2px 0 rgba(30,58,138,0.15), 0 4px 8px rgba(15,23,42,0.12);
 }
 
-h3 { font-family: var(--font-display); font-size: clamp(1.1rem, 1.5vw, 1.4rem); font-weight: 700; color: var(--primary-navy); margin-bottom: 0.6rem; line-height: 1.35; }
+h3 {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 1.5vw, 1.4rem);
+    font-weight: 700;
+    color: var(--primary-navy);
+    margin-bottom: 0.6rem;
+    line-height: 1.4;
+    text-wrap: balance;
+}
 
-p, li { font-family: var(--font-body); font-size: clamp(1rem, 1.15vw, 1.15rem); font-weight: 500; line-height: 1.7; color: var(--text-sub); }
+p, li {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.15vw, 1.15rem);
+    font-weight: 500;
+    line-height: 1.65;
+    color: var(--text-sub);
+}
 
 .gradient-text {
     color: var(--primary-navy) !important;
@@ -341,13 +323,8 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
     background: linear-gradient(160deg, #ffffff 0%, #f8fafc 55%, #eef2f9 100%);
     border-radius: 22px;
     padding: 2.25rem 1.75rem;
-    transform-style: preserve-3d;
     transition: transform 0.55s var(--ease-out-expo), box-shadow 0.55s var(--ease-out-expo), border-color 0.5s ease;
-    box-shadow:
-        inset 0 1.5px 0 rgba(255, 255, 255, 1),
-        0 1px 1px rgba(15, 23, 42, 0.04),
-        0 6px 12px -2px rgba(30, 58, 138, 0.06),
-        0 16px 28px -8px rgba(30, 58, 138, 0.10);
+    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 1px 1px rgba(15, 23, 42, 0.04), 0 6px 12px -2px rgba(30, 58, 138, 0.06), 0 16px 28px -8px rgba(30, 58, 138, 0.10);
     border: 2px solid rgba(255, 255, 255, 0.9);
     display: flex;
     flex-direction: column;
@@ -359,31 +336,12 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 .card-3d:hover {
     transform: translateY(-10px) rotateX(4deg) rotateY(-3deg);
     border-color: rgba(59, 130, 246, 0.4);
-    box-shadow:
-        inset 0 1.5px 0 rgba(255, 255, 255, 1),
-        0 12px 24px -4px rgba(30, 58, 138, 0.15),
-        0 28px 48px -12px rgba(30, 58, 138, 0.25),
-        0 0 0 4px rgba(59, 130, 246, 0.08);
+    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 12px 24px -4px rgba(30, 58, 138, 0.15), 0 28px 48px -12px rgba(30, 58, 138, 0.25);
 }
 
-.card-title {
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    font-weight: 800;
-    color: var(--primary-navy-dark);
-    margin-bottom: 0.6rem;
-    transition: color 0.3s ease;
-}
-
+.card-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; color: var(--primary-navy-dark); margin-bottom: 0.6rem; transition: color 0.3s ease; }
 .card-3d:hover .card-title { color: var(--primary-navy); }
-
-.card-text {
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--text-sub);
-    line-height: 1.65;
-    flex-grow: 1;
-}
+.card-text { font-size: 1rem; font-weight: 500; color: var(--text-sub); line-height: 1.65; flex-grow: 1; }
 
 /* CYCLE */
 .cycle-wrapper {
@@ -409,8 +367,7 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 
 .cycle-item {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     width: 200px;
     height: 170px;
     margin: -85px 0 0 -100px;
@@ -443,20 +400,13 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
     justify-content: center;
     text-align: center;
     border: 2px solid rgba(255, 255, 255, 0.95);
-    box-shadow:
-        inset 0 1.5px 0 rgba(255, 255, 255, 1),
-        0 2px 4px rgba(15, 23, 42, 0.06),
-        0 10px 20px -3px rgba(30, 58, 138, 0.12);
+    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 2px 4px rgba(15, 23, 42, 0.06), 0 10px 20px -3px rgba(30, 58, 138, 0.12);
     transition: box-shadow 0.5s var(--ease-out-expo), border-color 0.5s ease;
 }
 
 .cycle-item:hover .cycle-card {
     border-color: rgba(59, 130, 246, 0.6);
-    box-shadow:
-        inset 0 1.5px 0 rgba(255, 255, 255, 1),
-        0 20px 40px -4px rgba(30, 58, 138, 0.30),
-        0 45px 80px -12px rgba(30, 58, 138, 0.40),
-        0 0 0 4px rgba(59, 130, 246, 0.10);
+    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 20px 40px -4px rgba(30, 58, 138, 0.30), 0 45px 80px -12px rgba(30, 58, 138, 0.40);
 }
 
 .cycle-number {
@@ -497,7 +447,6 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 }
 
 .cycle-item:hover .cycle-icon { transform: scale(1.15) rotate(8deg); }
-
 .cycle-icon svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2.3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .cycle-icon.navy { background: linear-gradient(145deg, #eff6ff 0%, #dbeafe 100%); color: var(--primary-navy); }
 .cycle-icon.gold { background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%); color: var(--accent-gold); }
@@ -514,7 +463,6 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 }
 
 .cycle-item:hover .cycle-title { color: var(--primary-navy-light); }
-
 .cycle-sub { font-size: 0.8rem; font-weight: 500; color: var(--text-sub); line-height: 1.35; }
 
 .cycle-hint {
@@ -536,8 +484,7 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 
 .cycle-center {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     width: 210px;
     height: 210px;
@@ -589,8 +536,7 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 
 .cycle-arrow {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     width: 46px;
     height: 46px;
     margin: -23px 0 0 -23px;
@@ -639,12 +585,10 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
     background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%);
     border-radius: 28px;
     padding: 2.5rem 2rem 2rem;
-    box-shadow:
-        inset 0 2px 0 rgba(255, 255, 255, 1),
-        0 32px 64px -12px rgba(30, 58, 138, 0.35),
-        0 60px 120px -30px rgba(30, 58, 138, 0.45);
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 1), 0 32px 64px -12px rgba(30, 58, 138, 0.35);
     transform: scale(0.85) translateY(30px);
     transition: transform 0.5s var(--ease-out-back);
+    -webkit-overflow-scrolling: touch;
 }
 
 .step-modal.show .step-modal-content {
@@ -685,11 +629,7 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
     line-height: 1;
 }
 
-.step-modal-close:hover {
-    background: var(--primary-navy);
-    color: #fff;
-    transform: rotate(90deg) scale(1.1);
-}
+.step-modal-close:hover { background: var(--primary-navy); color: #fff; transform: rotate(90deg) scale(1.1); }
 
 .step-modal-header {
     display: flex;
@@ -713,7 +653,6 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
     color: #fff;
     flex-shrink: 0;
     box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.55), 0 6px 12px rgba(15, 23, 42, 0.20);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .step-modal-number.navy { background: linear-gradient(145deg, #3b82f6 0%, #1e3a8a 100%); }
@@ -732,13 +671,7 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
     margin-bottom: 0.25rem;
 }
 
-.step-modal-title {
-    font-family: var(--font-display);
-    font-size: clamp(1.3rem, 2.5vw, 1.7rem);
-    font-weight: 800;
-    color: var(--primary-navy-dark);
-    line-height: 1.2;
-}
+.step-modal-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.7rem); font-weight: 800; color: var(--primary-navy-dark); line-height: 1.2; }
 
 .step-modal-body { text-align: left; color: var(--text-sub); font-size: 1.05rem; line-height: 1.75; }
 .step-modal-body p { margin-bottom: 0.9rem; font-size: 1.05rem; line-height: 1.75; color: var(--text-sub); }
@@ -786,7 +719,7 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 
 .stack-item:hover {
     transform: translateX(12px);
-    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 20px 40px -8px rgba(30, 58, 138, 0.18), 0 0 0 3px rgba(59, 130, 246, 0.10);
+    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 20px 40px -8px rgba(30, 58, 138, 0.18);
     border-left-width: 8px;
 }
 
@@ -810,7 +743,6 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 }
 
 .stack-item:hover .stack-icon { transform: scale(1.18) rotate(-8deg); }
-
 .stack-item.gold .stack-icon { background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%); color: var(--accent-gold); }
 .stack-item.teal .stack-icon { background: linear-gradient(145deg, #f0fdfa 0%, #ccfbf1 100%); color: var(--accent-teal); }
 .stack-item.red .stack-icon { background: linear-gradient(145deg, #fef2f2 0%, #fee2e2 100%); color: var(--accent-red); }
@@ -828,8 +760,7 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 }
 
 .stack-item:hover .stack-content h4 { color: var(--primary-navy-light); }
-
-.stack-content p { font-size: 0.98rem; color: var(--text-sub); margin: 0; line-height: 1.6; }
+.stack-content p { font-size: 0.98rem; color: var(--text-sub); margin: 0; line-height: 1.55; }
 
 .glass-card {
     background: rgba(255, 255, 255, 0.55);
@@ -848,17 +779,14 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.55s var(--ease-out-expo), box-shadow 0.55s var(--ease-out-expo);
-    box-shadow:
-        0 2px 4px rgba(15, 23, 42, 0.06),
-        0 8px 20px -4px rgba(15, 23, 42, 0.10),
-        0 20px 40px -10px rgba(30, 58, 138, 0.20);
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06), 0 8px 20px -4px rgba(15, 23, 42, 0.10), 0 20px 40px -10px rgba(30, 58, 138, 0.20);
+    -webkit-tap-highlight-color: transparent;
 }
 
 .photo-frame::after {
     content: '🔍';
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
     font-size: 40px;
     opacity: 0;
@@ -871,10 +799,7 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 
 .photo-frame:hover {
     transform: translateY(-10px) rotateX(3deg) rotateY(-3deg) scale(1.02);
-    box-shadow:
-        0 4px 8px rgba(15, 23, 42, 0.08),
-        0 32px 60px -12px rgba(30, 58, 138, 0.32),
-        0 0 0 4px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 4px 8px rgba(15, 23, 42, 0.08), 0 32px 60px -12px rgba(30, 58, 138, 0.32);
 }
 
 .photo-frame img { border-radius: 18px; cursor: pointer; display: block; transition: filter 0.4s ease; }
@@ -922,13 +847,14 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     align-items: center;
     gap: 6px;
     box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 2px 4px rgba(15, 23, 42, 0.04), 0 8px 16px -4px rgba(30, 58, 138, 0.08);
+    -webkit-tap-highlight-color: transparent;
 }
 
 .video-tab-btn:hover {
     border-color: var(--primary-navy-light);
     color: var(--primary-navy);
     transform: translateY(-4px);
-    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 12px 24px -4px rgba(30, 58, 138, 0.22), 0 0 0 4px rgba(59, 130, 246, 0.10);
+    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 12px 24px -4px rgba(30, 58, 138, 0.22);
 }
 
 .video-tab-btn.active {
@@ -953,10 +879,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s var(--ease-out-expo);
 }
 
-.video-container:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 8px 16px rgba(15, 23, 42, 0.15), 0 48px 90px -16px rgba(30, 58, 138, 0.35);
-}
+.video-container:hover { transform: translateY(-6px); }
 
 .video-thumbnail { position: absolute; inset: 0; cursor: pointer; transition: opacity 0.3s ease; }
 .video-thumbnail img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; box-shadow: none; margin: 0; cursor: pointer; }
@@ -982,9 +905,8 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 .video-thumbnail .overlay p { color: #fff; margin: 0; font-size: 1rem; font-weight: 600; }
 .video-frame { width: 100%; height: 100%; border: none; display: none; }
 
-/* Slide 8 compact layout */
+/* Compact Slide 8 */
 .slide-8-compact .image-grid { max-width: 600px; margin: 0 auto 1.25rem; }
-.slide-8-compact .photo-frame img { max-height: 18vh; object-fit: cover; }
 
 /* KPI */
 .kpi-dashboard {
@@ -1047,9 +969,14 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 .qual-hero-slide { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; }
 
 .qual-hero-icon {
-    width: 160px; height: 160px; border-radius: 44px;
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 2.5rem; position: relative;
+    width: 160px;
+    height: 160px;
+    border-radius: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    position: relative;
     transition: transform 0.7s var(--ease-out-expo);
     animation: floatIcon 5s ease-in-out infinite;
     overflow: hidden;
@@ -1069,20 +996,27 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 }
 
 .qual-hero-slide:hover .qual-hero-icon { transform: translateY(-24px) scale(1.1) rotateZ(-3deg); animation-play-state: paused; }
-
 .qual-hero-icon svg { width: 80px; height: 80px; stroke: currentColor; stroke-width: 2; fill: none; }
 
 .qual-hero-title {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    font-size: clamp(1.6rem, 4vw, 3.2rem);
     font-weight: 800;
     color: var(--primary-navy-dark);
     margin-bottom: 1.5rem;
-    line-height: 1.15;
+    line-height: 1.2;
     text-shadow: 0 1px 0 rgba(255,255,255,0.95), 0 2px 0 rgba(30,58,138,0.12), 0 14px 24px rgba(30,58,138,0.15);
+    text-wrap: balance;
 }
 
-.qual-hero-desc { font-size: clamp(1.1rem, 1.6vw, 1.45rem); max-width: 800px; color: var(--text-sub); line-height: 1.75; margin: 0 auto; font-weight: 500; }
+.qual-hero-desc {
+    font-size: clamp(1rem, 1.5vw, 1.4rem);
+    max-width: 800px;
+    color: var(--text-sub);
+    line-height: 1.7;
+    margin: 0 auto;
+    font-weight: 500;
+}
 
 .theme-blue .qual-hero-icon { background: linear-gradient(160deg, #eff6ff 0%, #dbeafe 55%, #bfdbfe 100%); color: #3b82f6; box-shadow: inset 0 2px 0 rgba(255,255,255,1), 0 16px 32px -4px rgba(59,130,246,0.25); }
 .theme-green .qual-hero-icon { background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 55%, #bbf7d0 100%); color: #22c55e; box-shadow: inset 0 2px 0 rgba(255,255,255,1), 0 16px 32px -4px rgba(34,197,94,0.25); }
@@ -1101,6 +1035,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     border: 1.5px solid rgba(255, 255, 255, 0.25);
     width: 54px; height: 54px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .lightbox-close:hover { color: var(--accent-gold-light); background: rgba(255, 255, 255, 0.25); transform: rotate(90deg) scale(1.1); }
@@ -1111,6 +1046,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     width: 68px; height: 68px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.4s var(--ease-out-expo);
+    -webkit-tap-highlight-color: transparent;
 }
 
 .lightbox-nav:hover { background: rgba(255, 255, 255, 0.3); color: var(--accent-gold-light); transform: translateY(-50%) scale(1.15); }
@@ -1136,6 +1072,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     border: none; cursor: pointer; margin-top: 1.75rem;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     position: relative; overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .btn-primary::before {
@@ -1148,11 +1085,8 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 }
 
 .btn-primary:hover::before { left: 100%; }
-
-.btn-primary:hover {
-    transform: translateY(-6px) scale(1.05);
-    box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.5), 0 32px 64px -12px rgba(30,58,138,0.6), 0 0 0 6px rgba(59, 130, 246, 0.15);
-}
+.btn-primary:hover { transform: translateY(-6px) scale(1.05); box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.5), 0 32px 64px -12px rgba(30,58,138,0.6); }
+.btn-primary:active { transform: translateY(-2px) scale(1.02); }
 
 /* ANIMATIONS */
 .animate { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo); }
@@ -1172,57 +1106,349 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 .slide.active .stagger-list > *:nth-child(5) { transition-delay: 0.63s; opacity: 1; transform: translateX(0); }
 .slide.active .stagger-list > *:nth-child(6) { transition-delay: 0.75s; opacity: 1; transform: translateX(0); }
 
-/* RESPONSIVE */
+/* ============================================================
+   ★★★ RESPONSIVE — TABLET ★★★
+============================================================ */
 @media (max-width: 1024px) {
-    .cycle-wrapper { width: min(720px, 95vw); height: min(660px, 88vw); }
-    .cycle-item { width: 170px; height: 155px; margin: -77.5px 0 0 -85px; transform: rotate(var(--angle)) translate(240px) rotate(calc(-1 * var(--angle))); }
-    .cycle-arrow { transform: rotate(var(--angle)) translate(240px) rotate(90deg); }
+    .cycle-wrapper { width: min(700px, 92vw); height: min(640px, 82vw); }
+    .cycle-item { width: 170px; height: 155px; margin: -77.5px 0 0 -85px; transform: rotate(var(--angle)) translate(230px) rotate(calc(-1 * var(--angle))); }
+    .cycle-arrow { transform: rotate(var(--angle)) translate(230px) rotate(90deg); }
     @keyframes arrowPulse {
-        0%, 100% { transform: rotate(var(--angle)) translate(240px) rotate(90deg) scale(1); }
-        50% { transform: rotate(var(--angle)) translate(240px) rotate(90deg) scale(1.15); }
+        0%, 100% { transform: rotate(var(--angle)) translate(230px) rotate(90deg) scale(1); }
+        50% { transform: rotate(var(--angle)) translate(230px) rotate(90deg) scale(1.15); }
     }
     .cycle-center { width: 175px; height: 175px; }
+    .cycle-center-title { font-size: 1.05rem; }
 }
 
+/* ============================================================
+   ★★★ RESPONSIVE — MOBILE PHONE ★★★
+============================================================ */
 @media (max-width: 768px) {
     html { font-size: 15px; }
-    .slide { padding: 3rem 1.25rem; }
-    .split-layout, .split-layout.asymmetric { grid-template-columns: 1fr; gap: 1.75rem; text-align: center; }
-    .slide-content.left-align { align-items: center; text-align: center; }
-    .ig-grid-3 { grid-template-columns: 1fr; }
-    .image-grid { grid-template-columns: 1fr; }
-    .teacher-img { max-height: 40vh; }
-    .video-tabs { flex-direction: column; align-items: center; }
-    .video-tab-btn { width: 100%; justify-content: center; }
-    .kpi-dashboard { grid-template-columns: 1fr; padding: 1.75rem; gap: 1.75rem; }
-    .kpi-chart-container { width: 200px; height: 200px; }
-    .kpi-number { font-size: 3.25rem; }
-    .qual-hero-icon { width: 120px; height: 120px; border-radius: 32px; margin-bottom: 1.75rem; }
-    .qual-hero-title { font-size: 1.9rem; }
-    .qual-hero-desc { font-size: 1rem; }
 
-    .cycle-wrapper { width: min(480px, 95vw); height: min(480px, 95vw); }
-    .cycle-item { width: 125px; height: 118px; margin: -59px 0 0 -62.5px; transform: rotate(var(--angle)) translate(170px) rotate(calc(-1 * var(--angle))); }
-    .cycle-arrow { width: 30px; height: 30px; margin: -15px 0 0 -15px; transform: rotate(var(--angle)) translate(170px) rotate(90deg); }
-    .cycle-arrow svg { width: 20px; height: 20px; }
-    @keyframes arrowPulse {
-        0%, 100% { transform: rotate(var(--angle)) translate(170px) rotate(90deg) scale(1); }
-        50% { transform: rotate(var(--angle)) translate(170px) rotate(90deg) scale(1.1); }
+    .slide {
+        padding: 2rem 1rem;
+        padding-top: max(2rem, env(safe-area-inset-top));
+        padding-bottom: max(2rem, env(safe-area-inset-bottom));
+        justify-content: flex-start;
+        padding-top: max(3.5rem, env(safe-area-inset-top));
     }
-    .cycle-center { width: 125px; height: 125px; padding: 0.9rem; }
-    .cycle-center-title { font-size: 0.85rem; }
-    .cycle-center-sub { font-size: 0.58rem; }
-    .cycle-number { width: 38px; height: 38px; font-size: 1.05rem; top: -13px; border-radius: 11px; }
-    .cycle-icon { width: 36px; height: 36px; border-radius: 10px; margin-bottom: 0.45rem; }
-    .cycle-icon svg { width: 17px; height: 17px; }
-    .cycle-title { font-size: 0.8rem; }
-    .cycle-sub { font-size: 0.68rem; }
+
+    /* Force vertical layout */
+    .split-layout,
+    .split-layout.asymmetric {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem;
+        text-align: center;
+    }
+
+    .slide-content.left-align { align-items: center; text-align: center; }
+    .ig-grid-3 { grid-template-columns: 1fr !important; gap: 1.25rem; margin-top: 1.25rem; }
+    .image-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.75rem; }
+
+    /* Typography mobile */
+    h1 { font-size: clamp(1.6rem, 6.5vw, 2.2rem); line-height: 1.2; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    h2 { font-size: clamp(1.35rem, 5.5vw, 1.9rem); line-height: 1.25; margin-bottom: 1rem; }
+    h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+
+    p, li { font-size: 0.95rem; line-height: 1.65; }
+
+    /* Logo & teacher image */
+    .school-logo { max-height: 75px; margin-bottom: 0.85rem; }
+    .teacher-img { max-height: 35vh; }
+
+    /* Video */
+    .video-tabs { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; padding-bottom: 6px; gap: 8px; -webkit-overflow-scrolling: touch; }
+    .video-tabs::-webkit-scrollbar { display: none; }
+    .video-tab-btn { flex-shrink: 0; font-size: 0.85rem; padding: 0.6rem 1rem; }
+    .video-tab-btn svg { width: 12px; height: 12px; }
+    .video-container { max-width: 100%; }
+
+    /* KPI */
+    .kpi-dashboard { grid-template-columns: 1fr; padding: 1.5rem; gap: 1.5rem; margin-top: 1rem; }
+    .kpi-chart-container { width: 170px; height: 170px; }
+    .kpi-number { font-size: 2.85rem; }
+    .kpi-percent { font-size: 1.25rem; }
+    .kpi-label { font-size: 0.78rem; }
+    .kpi-info { text-align: center; }
+    .kpi-info h3 { font-size: 1.15rem; }
+    .kpi-info p { font-size: 0.95rem; }
+
+    /* Stack */
+    .stack-item { padding: 1rem 1.15rem; gap: 0.85rem; border-left-width: 4px; }
+    .stack-item:hover { transform: translateX(6px); border-left-width: 6px; }
+    .stack-icon { width: 40px; height: 40px; border-radius: 11px; }
+    .stack-icon svg { width: 19px; height: 19px; }
+    .stack-content h4 { font-size: 1rem; margin-bottom: 0.15rem; }
+    .stack-content p { font-size: 0.88rem; line-height: 1.5; }
+
+    /* Card 3D */
+    .card-3d { padding: 1.5rem 1.25rem; }
+    .card-title { font-size: 1.05rem; }
+    .card-text { font-size: 0.92rem; }
+
+    /* Photo frames - smaller for mobile */
+    .photo-frame { border-radius: 14px; }
+    .photo-frame img { border-radius: 14px; }
+
+    /* Image grid 2 columns on mobile */
+    .image-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .image-grid img { max-height: 16vh; object-fit: cover; width: 100%; border-radius: 12px; }
+
+    /* Cycle - Smaller for mobile 9:16 */
+    .cycle-wrapper {
+        width: min(440px, 92vw);
+        height: min(440px, 92vw);
+        margin: 1rem auto 0;
+    }
+    .cycle-item {
+        width: 118px;
+        height: 110px;
+        margin: -55px 0 0 -59px;
+        transform: rotate(var(--angle)) translate(155px) rotate(calc(-1 * var(--angle)));
+    }
+    .cycle-item:hover {
+        transform: rotate(var(--angle)) translate(155px) rotate(calc(-1 * var(--angle))) scale(1.06);
+    }
+    .cycle-arrow {
+        width: 26px;
+        height: 26px;
+        margin: -13px 0 0 -13px;
+        transform: rotate(var(--angle)) translate(155px) rotate(90deg);
+    }
+    .cycle-arrow svg { width: 18px; height: 18px; }
+    @keyframes arrowPulse {
+        0%, 100% { transform: rotate(var(--angle)) translate(155px) rotate(90deg) scale(1); }
+        50% { transform: rotate(var(--angle)) translate(155px) rotate(90deg) scale(1.1); }
+    }
+    .cycle-center {
+        width: 115px;
+        height: 115px;
+        padding: 0.75rem;
+    }
+    .cycle-center-icon { width: 34px; height: 34px; margin-bottom: 0.4rem; }
+    .cycle-center-icon svg { width: 17px; height: 17px; }
+    .cycle-center-title { font-size: 0.82rem; line-height: 1.1; }
+    .cycle-center-sub { font-size: 0.55rem; margin-top: 0.2rem; }
+    .cycle-number {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+        top: -12px;
+        border-radius: 10px;
+    }
+    .cycle-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        margin-bottom: 0.4rem;
+    }
+    .cycle-icon svg { width: 16px; height: 16px; }
+    .cycle-title { font-size: 0.78rem; line-height: 1.15; margin-bottom: 0.2rem; }
+    .cycle-sub { font-size: 0.66rem; line-height: 1.25; }
     .cycle-hint { display: none; }
 
-    .step-modal-content { padding: 2rem 1.35rem 1.5rem; }
-    .step-modal-header { flex-direction: column; text-align: center; gap: 0.9rem; }
+    /* Qual hero */
+    .qual-hero-icon {
+        width: 110px;
+        height: 110px;
+        border-radius: 30px;
+        margin-bottom: 1.5rem;
+    }
+    .qual-hero-icon svg { width: 55px; height: 55px; }
+    .qual-hero-title { font-size: 1.6rem; margin-bottom: 1rem; }
+    .qual-hero-desc { font-size: 1rem; line-height: 1.7; }
+
+    /* Modal */
+    .step-modal { padding: 1rem; }
+    .step-modal-content {
+        padding: 1.75rem 1.25rem 1.5rem;
+        max-height: 92vh;
+        border-radius: 22px;
+    }
+    .step-modal-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 1.25rem;
+    }
     .step-modal-titles { text-align: center; }
-    .step-modal-number { width: 56px; height: 56px; font-size: 1.5rem; }
+    .step-modal-number { width: 56px; height: 56px; font-size: 1.5rem; border-radius: 15px; }
+    .step-modal-title { font-size: 1.25rem; }
+    .step-modal-body { font-size: 0.95rem; line-height: 1.7; }
+    .step-modal-body p { font-size: 0.95rem; line-height: 1.7; }
+    .step-modal-body li { font-size: 0.92rem; }
+    .step-modal-highlight p { font-size: 0.92rem; }
+
+    /* Lightbox */
+    .lightbox-close { top: 12px; right: 12px; font-size: 32px; width: 46px; height: 46px; }
+    .lightbox-nav { width: 48px; height: 48px; font-size: 30px; }
+    .lightbox-nav.prev { left: 10px; }
+    .lightbox-nav.next { right: 10px; }
+    .lightbox img { max-width: 94%; max-height: 78%; }
+    .lightbox-counter { bottom: 20px; font-size: 0.9rem; padding: 8px 18px; }
+
+    /* Sound toggle */
+    .sound-toggle { bottom: 12px; right: 12px; width: 46px; height: 46px; }
+    .sound-toggle svg { width: 20px; height: 20px; }
+
+    /* Button */
+    .btn-primary { font-size: 1rem; padding: 0.95rem 2rem; margin-top: 1.25rem; width: 100%; max-width: 320px; justify-content: center; }
+
+    /* Glass card */
+    .glass-card { padding: 1.25rem; }
+
+    /* Prevent hover effects on mobile (use tap instead) */
+    .card-3d:hover { transform: none; }
+    .stack-item:hover { transform: none; border-left-width: 4px; }
+    .photo-frame:hover { transform: none; }
+    .photo-frame:hover::after { opacity: 0; }
+    .btn-primary:hover { transform: none; }
+    .video-tab-btn:hover { transform: none; }
+}
+
+/* ============================================================
+   ★★★ MOBILE SMALL (iPhone SE, etc.) ★★★
+============================================================ */
+@media (max-width: 480px) {
+    html { font-size: 14px; }
+
+    .slide {
+        padding: 3rem 0.9rem 2rem;
+    }
+
+    h1 { font-size: 1.4rem; line-height: 1.2; }
+    h2 { font-size: 1.2rem; }
+    h3 { font-size: 1rem; }
+    p, li { font-size: 0.9rem; }
+
+    .school-logo { max-height: 65px; }
+
+    /* Even smaller cycle for 9:16 portrait */
+    .cycle-wrapper {
+        width: min(360px, 92vw);
+        height: min(360px, 92vw);
+    }
+    .cycle-item {
+        width: 100px;
+        height: 95px;
+        margin: -47px 0 0 -50px;
+        transform: rotate(var(--angle)) translate(128px) rotate(calc(-1 * var(--angle)));
+    }
+    .cycle-arrow {
+        width: 22px;
+        height: 22px;
+        margin: -11px 0 0 -11px;
+        transform: rotate(var(--angle)) translate(128px) rotate(90deg);
+    }
+    .cycle-arrow svg { width: 15px; height: 15px; }
+    @keyframes arrowPulse {
+        0%, 100% { transform: rotate(var(--angle)) translate(128px) rotate(90deg) scale(1); }
+        50% { transform: rotate(var(--angle)) translate(128px) rotate(90deg) scale(1.1); }
+    }
+    .cycle-center { width: 95px; height: 95px; padding: 0.6rem; }
+    .cycle-center-icon { width: 28px; height: 28px; margin-bottom: 0.3rem; }
+    .cycle-center-icon svg { width: 14px; height: 14px; }
+    .cycle-center-title { font-size: 0.7rem; }
+    .cycle-center-sub { font-size: 0.48rem; }
+    .cycle-number { width: 32px; height: 32px; font-size: 0.85rem; top: -10px; border-radius: 9px; }
+    .cycle-icon { width: 30px; height: 30px; border-radius: 8px; margin-bottom: 0.3rem; }
+    .cycle-icon svg { width: 14px; height: 14px; }
+    .cycle-title { font-size: 0.68rem; }
+    .cycle-sub { font-size: 0.6rem; }
+
+    .kpi-chart-container { width: 150px; height: 150px; }
+    .kpi-number { font-size: 2.5rem; }
+    .kpi-percent { font-size: 1.1rem; }
+
+    .qual-hero-icon { width: 95px; height: 95px; border-radius: 26px; margin-bottom: 1.25rem; }
+    .qual-hero-icon svg { width: 46px; height: 46px; }
+    .qual-hero-title { font-size: 1.35rem; }
+    .qual-hero-desc { font-size: 0.92rem; line-height: 1.65; }
+
+    .stack-item { padding: 0.9rem 1rem; gap: 0.75rem; }
+    .stack-icon { width: 36px; height: 36px; border-radius: 10px; }
+    .stack-icon svg { width: 17px; height: 17px; }
+    .stack-content h4 { font-size: 0.92rem; }
+    .stack-content p { font-size: 0.82rem; }
+
+    .image-grid img { max-height: 14vh; }
+
+    .video-tab-btn { font-size: 0.78rem; padding: 0.5rem 0.85rem; }
+
+    .step-modal-content { padding: 1.5rem 1rem 1.25rem; }
+    .step-modal-body { font-size: 0.9rem; }
+    .step-modal-body li { font-size: 0.88rem; }
+}
+
+/* ============================================================
+   ★★★ MOBILE LANDSCAPE (เช่น มือถือหมุนแนวนอน) ★★★
+============================================================ */
+@media (max-width: 900px) and (orientation: landscape) {
+    .slide {
+        padding: 2rem 1.5rem;
+        justify-content: center;
+    }
+
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.3rem; margin-bottom: 0.75rem; }
+
+    .cycle-wrapper { width: min(450px, 55vw); height: min(450px, 55vw); }
+    .cycle-item { width: 110px; height: 105px; margin: -52.5px 0 0 -55px; transform: rotate(var(--angle)) translate(148px) rotate(calc(-1 * var(--angle))); }
+    .cycle-arrow { transform: rotate(var(--angle)) translate(148px) rotate(90deg); }
+    @keyframes arrowPulse {
+        0%, 100% { transform: rotate(var(--angle)) translate(148px) rotate(90deg) scale(1); }
+        50% { transform: rotate(var(--angle)) translate(148px) rotate(90deg) scale(1.1); }
+    }
+    .cycle-center { width: 105px; height: 105px; }
+    .cycle-center-title { font-size: 0.78rem; }
+    .cycle-title { font-size: 0.72rem; }
+    .cycle-sub { font-size: 0.62rem; }
+
+    .qual-hero-icon { width: 90px; height: 90px; margin-bottom: 1rem; }
+    .qual-hero-icon svg { width: 45px; height: 45px; }
+    .qual-hero-title { font-size: 1.4rem; }
+
+    .teacher-img { max-height: 40vh; }
+}
+
+/* ============================================================
+   ★★★ HEIGHT-BASED QUERIES (สำหรับหน้าจอเตี้ย) ★★★
+============================================================ */
+@media (max-height: 700px) and (min-width: 769px) {
+    .slide { padding: 1.5rem clamp(1.25rem, 4vw, 4rem); }
+    h1 { font-size: clamp(1.5rem, 3vw, 2.5rem); margin-bottom: 0.75rem; }
+    h2 { font-size: clamp(1.3rem, 2.5vw, 2rem); margin-bottom: 1rem; }
+    .school-logo { max-height: 80px; margin-bottom: 0.75rem; }
+    .teacher-img { max-height: 55vh; }
+    .cycle-wrapper { width: min(680px, 88vw); height: min(560px, 70vw); }
+    .cycle-item { width: 165px; height: 145px; margin: -72.5px 0 0 -82.5px; transform: rotate(var(--angle)) translate(215px) rotate(calc(-1 * var(--angle))); }
+    .cycle-arrow { transform: rotate(var(--angle)) translate(215px) rotate(90deg); }
+    @keyframes arrowPulse {
+        0%, 100% { transform: rotate(var(--angle)) translate(215px) rotate(90deg) scale(1); }
+        50% { transform: rotate(var(--angle)) translate(215px) rotate(90deg) scale(1.15); }
+    }
+    .cycle-center { width: 165px; height: 165px; }
+    .qual-hero-icon { width: 120px; height: 120px; margin-bottom: 1.5rem; }
+    .qual-hero-icon svg { width: 60px; height: 60px; }
+    .qual-hero-title { font-size: clamp(1.5rem, 3vw, 2.5rem); }
+}
+
+@media (max-height: 850px) and (max-width: 768px) {
+    .slide { padding-top: 2.5rem; padding-bottom: 1.5rem; }
+    .cycle-wrapper { width: min(400px, 85vw); height: min(400px, 85vw); margin-top: 0.5rem; }
+    .cycle-item { width: 110px; height: 105px; margin: -52.5px 0 0 -55px; transform: rotate(var(--angle)) translate(140px) rotate(calc(-1 * var(--angle))); }
+    .cycle-arrow { transform: rotate(var(--angle)) translate(140px) rotate(90deg); }
+    @keyframes arrowPulse {
+        0%, 100% { transform: rotate(var(--angle)) translate(140px) rotate(90deg) scale(1); }
+        50% { transform: rotate(var(--angle)) translate(140px) rotate(90deg) scale(1.1); }
+    }
+    .cycle-center { width: 105px; height: 105px; }
+    .qual-hero-icon { width: 100px; height: 100px; border-radius: 28px; margin-bottom: 1rem; }
+    .qual-hero-icon svg { width: 50px; height: 50px; }
+    .qual-hero-title { font-size: 1.5rem; margin-bottom: 0.85rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1273,10 +1499,10 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
         <div class="slide-content left-align">
             <img src="img_school_logo.png" alt="ตราโรงเรียนบ้านถิ่นสำราญ" class="school-logo animate animate-delay-1">
             <h1 class="animate animate-delay-2">การพัฒนาความสามารถในการอ่านและเข้าใจความหมายคำศัพท์ภาษาอังกฤษ</h1>
-            <p class="animate animate-delay-3" style="font-size: 1.3rem; color: var(--text-main); margin-top: 0.85rem; font-weight: 600;">
+            <p class="animate animate-delay-3" style="font-size: 1.2rem; color: var(--text-main); margin-top: 0.75rem; font-weight: 600;">
                 โดยใช้การเทียบเสียงร่วมกับเกม Blooket<br>สำหรับนักเรียนชั้นประถมศึกษาปีที่ 5–6
             </p>
-            <p class="animate animate-delay-4" style="margin-top: 2rem; font-size: 1.1rem; font-weight: 700; color: var(--primary-navy);">
+            <p class="animate animate-delay-4" style="margin-top: 1.75rem; font-size: 1.05rem; font-weight: 700; color: var(--primary-navy);">
                 นายศิริศักดิ์ จันทร์อ้าย · โรงเรียนบ้านถิ่นสำราญ
             </p>
         </div>
@@ -1320,7 +1546,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
                 <div class="stack-item"><div class="stack-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div><div class="stack-content"><h4>ผลกระทบ</h4><p>ขาดความมั่นใจ, เจตคติเชิงลบ, ไม่มีส่วนร่วม</p></div></div>
             </div>
             <div class="glass-card animate animate-delay-4" style="margin-top: 1.25rem; padding: 1.25rem; border-left: 5px solid var(--accent-gold);">
-                <p style="color: var(--text-main); font-weight: 600; margin: 0; font-size: 1rem;">
+                <p style="color: var(--text-main); font-weight: 600; margin: 0; font-size: 0.95rem;">
                     <strong>แนวทางแก้ไข</strong> — ไม่เน้นท่องจำ แต่เริ่มจาก "อ่านออก → เข้าใจความหมาย → นำไปใช้"
                 </p>
             </div>
@@ -1364,7 +1590,6 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
                     <div class="cycle-icon navy"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
                     <div class="cycle-title">ศึกษา<br>และวิเคราะห์</div>
                     <div class="cycle-sub">วิเคราะห์หลักสูตรและบริบทผู้เรียน</div>
-                    <div class="cycle-hint">คลิกดู →</div>
                 </div>
             </div>
 
@@ -1374,7 +1599,6 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
                     <div class="cycle-icon gold"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></div>
                     <div class="cycle-title">วิเคราะห์<br>ปัญหา</div>
                     <div class="cycle-sub">กำหนดแนวทางและจุดเริ่มต้น</div>
-                    <div class="cycle-hint">คลิกดู →</div>
                 </div>
             </div>
 
@@ -1384,7 +1608,6 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
                     <div class="cycle-icon teal"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg></div>
                     <div class="cycle-title">ออกแบบ<br>กระบวนการ</div>
                     <div class="cycle-sub">5 ขั้นตอนการเรียนรู้</div>
-                    <div class="cycle-hint">คลิกดู →</div>
                 </div>
             </div>
 
@@ -1394,7 +1617,6 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
                     <div class="cycle-icon navy"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
                     <div class="cycle-title">จัด<br>กิจกรรม</div>
                     <div class="cycle-sub">ฝึกปฏิบัติจริงในชั้นเรียน</div>
-                    <div class="cycle-hint">คลิกดู →</div>
                 </div>
             </div>
 
@@ -1404,7 +1626,6 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
                     <div class="cycle-icon gold"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
                     <div class="cycle-title">เกม<br>Blooket</div>
                     <div class="cycle-sub">ฝึกซ้ำและทบทวน</div>
-                    <div class="cycle-hint">คลิกดู →</div>
                 </div>
             </div>
 
@@ -1414,7 +1635,6 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
                     <div class="cycle-icon teal"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
                     <div class="cycle-title">วัดและ<br>ประเมินผล</div>
                     <div class="cycle-sub">จากการปฏิบัติจริง</div>
-                    <div class="cycle-hint">คลิกดู →</div>
                 </div>
             </div>
         </div>
@@ -1447,17 +1667,17 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
         <h2 class="animate animate-delay-1">สื่อและ<span class="gradient-text">นวัตกรรม</span>ที่ใช้</h2>
         <div class="ig-grid-3 stagger-list">
             <div class="card-3d">
-                <div class="photo-frame" style="margin-bottom: 1.25rem;"><img src="img_group.jpg" alt="ใบความรู้" style="width: 100%; height: 180px; object-fit: cover; border-radius: 14px;"></div>
+                <div class="photo-frame" style="margin-bottom: 1.25rem;"><img src="img_group.jpg" alt="ใบความรู้" style="width: 100%; height: 160px; object-fit: cover; border-radius: 14px;"></div>
                 <h3 class="card-title">ใบความรู้เทียบเสียง</h3>
                 <p class="card-text">ใช้ภาษาไทยเป็นสะพานช่วยอ่าน</p>
             </div>
             <div class="card-3d">
-                <div class="photo-frame" style="margin-bottom: 1.25rem;"><img src="img_web_6.jpg" alt="Blooket" style="width: 100%; height: 180px; object-fit: cover; border-radius: 14px;"></div>
+                <div class="photo-frame" style="margin-bottom: 1.25rem;"><img src="img_web_6.jpg" alt="Blooket" style="width: 100%; height: 160px; object-fit: cover; border-radius: 14px;"></div>
                 <h3 class="card-title">เกม Blooket</h3>
                 <p class="card-text">ฝึกซ้ำในบรรยากาศสนุกสนาน</p>
             </div>
             <div class="card-3d">
-                <div class="photo-frame" style="margin-bottom: 1.25rem;"><img src="img_web_1.jpg" alt="เว็บไซต์" style="width: 100%; height: 180px; object-fit: cover; border-radius: 14px;"></div>
+                <div class="photo-frame" style="margin-bottom: 1.25rem;"><img src="img_web_1.jpg" alt="เว็บไซต์" style="width: 100%; height: 160px; object-fit: cover; border-radius: 14px;"></div>
                 <h3 class="card-title">เว็บไซต์ที่พัฒนาขึ้นเอง</h3>
                 <p class="card-text"><a href="https://tum-service.github.io/1111/" target="_blank" style="color: var(--primary-navy); text-decoration: none; font-weight: 700;">tum-service.github.io/1111/</a></p>
             </div>
@@ -1478,32 +1698,30 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
             </div>
         </div>
         <div class="image-grid animate animate-delay-2">
-            <div class="photo-frame"><img src="img_read_1.jpg" alt="อ่าน 1" style="max-height: 22vh; object-fit: cover; width: 100%;"></div>
-            <div class="photo-frame"><img src="img_read_2.jpg" alt="อ่าน 2" style="max-height: 22vh; object-fit: cover; width: 100%;"></div>
-            <div class="photo-frame"><img src="img_phonics_3.jpg" alt="เทียบเสียง 1" style="max-height: 22vh; object-fit: cover; width: 100%;"></div>
-            <div class="photo-frame"><img src="img_phonics_1.jpg" alt="เทียบเสียง 2" style="max-height: 22vh; object-fit: cover; width: 100%;"></div>
+            <div class="photo-frame"><img src="img_read_1.jpg" alt="อ่าน 1"></div>
+            <div class="photo-frame"><img src="img_read_2.jpg" alt="อ่าน 2"></div>
+            <div class="photo-frame"><img src="img_phonics_3.jpg" alt="เทียบเสียง 1"></div>
+            <div class="photo-frame"><img src="img_phonics_1.jpg" alt="เทียบเสียง 2"></div>
         </div>
     </div>
 </section>
 
-<!-- ============================================================
-     SLIDE 8: การนำไปใช้ (FIXED — compact + working animations)
-============================================================ -->
+<!-- SLIDE 8 -->
 <section class="slide slide-8-compact" id="slide8">
     <div class="slide-content" style="max-width: 900px;">
         <h2 class="animate animate-delay-1">การฝึกปฏิบัติจริง: <span class="gradient-text">การนำไปใช้</span></h2>
-        <p class="animate animate-delay-2" style="margin-bottom: 1.25rem; font-size: 1.05rem;">ฝึกแต่งประโยคจากคำศัพท์ที่เรียนรู้ · ฝึกอ่านประโยคที่ตนเองแต่งขึ้น · ฝึกแปลความหมาย</p>
+        <p class="animate animate-delay-2" style="margin-bottom: 1rem; font-size: 1rem;">ฝึกแต่งประโยคจากคำศัพท์ที่เรียนรู้ · ฝึกอ่านประโยคที่ตนเองแต่งขึ้น · ฝึกแปลความหมาย</p>
 
-        <div class="image-grid animate animate-delay-3" style="grid-template-columns: 1fr 1fr; margin: 0 auto 1.25rem; max-width: 620px;">
-            <div class="photo-frame"><img src="img_sentence_1.jpg" alt="แต่งประโยค 1" style="max-height: 18vh; object-fit: cover; width: 100%;"></div>
-            <div class="photo-frame"><img src="img_sentence_2.jpg" alt="แต่งประโยค 2" style="max-height: 18vh; object-fit: cover; width: 100%;"></div>
+        <div class="image-grid animate animate-delay-3" style="grid-template-columns: 1fr 1fr; margin: 0 auto 1rem; max-width: 620px;">
+            <div class="photo-frame"><img src="img_sentence_1.jpg" alt="แต่งประโยค 1" style="max-height: 16vh; object-fit: cover; width: 100%;"></div>
+            <div class="photo-frame"><img src="img_sentence_2.jpg" alt="แต่งประโยค 2" style="max-height: 16vh; object-fit: cover; width: 100%;"></div>
         </div>
 
         <div class="video-tabs animate animate-delay-4">
-            <button class="video-tab-btn active" onclick="selectVideo('175KCwtHjGok9_tSQz0DxqptXZYEwIf4T', 'thumb1.jpg', this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอที่ 1</button>
-            <button class="video-tab-btn" onclick="selectVideo('1gLO4Qr15WbjjD5NheaXqsn6JV9YpjwI8', 'thumb2.jpg', this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอที่ 2</button>
-            <button class="video-tab-btn" onclick="selectVideo('1pxGuOzM1hECrzvqcHGUjaG9arH0yk-qz', 'thumb3.jpg', this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอที่ 3</button>
-            <button class="video-tab-btn" onclick="selectVideo('170huuZcEl-Tc05jCV0zCy385wRQC-84x', 'thumb4.jpg', this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอที่ 4</button>
+            <button class="video-tab-btn active" onclick="selectVideo('175KCwtHjGok9_tSQz0DxqptXZYEwIf4T', 'thumb1.jpg', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอ 1</button>
+            <button class="video-tab-btn" onclick="selectVideo('1gLO4Qr15WbjjD5NheaXqsn6JV9YpjwI8', 'thumb2.jpg', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอ 2</button>
+            <button class="video-tab-btn" onclick="selectVideo('1pxGuOzM1hECrzvqcHGUjaG9arH0yk-qz', 'thumb3.jpg', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอ 3</button>
+            <button class="video-tab-btn" onclick="selectVideo('170huuZcEl-Tc05jCV0zCy385wRQC-84x', 'thumb4.jpg', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอ 4</button>
         </div>
 
         <div class="video-container animate animate-delay-4">
@@ -1522,7 +1740,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     <div class="split-layout">
         <div class="slide-content left-align">
             <h2 class="animate animate-delay-1">เกม <span class="gradient-text">Blooket</span></h2>
-            <p class="animate animate-delay-2" style="color: var(--primary-navy); font-weight: 700; margin-bottom: 1.25rem; font-size: 1.1rem;">เครื่องมือฝึกซ้ำและทบทวน</p>
+            <p class="animate animate-delay-2" style="color: var(--primary-navy); font-weight: 700; margin-bottom: 1rem; font-size: 1.05rem;">เครื่องมือฝึกซ้ำและทบทวน</p>
             <div class="ig-stack stagger-list">
                 <div class="stack-item"><div class="stack-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></div><div class="stack-content"><h4>จัดทำชุดคำถาม</h4><p>จัดทำชุดคำถามจากคำศัพท์ในบทเรียน</p></div></div>
                 <div class="stack-item gold"><div class="stack-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg></div><div class="stack-content"><h4>ใช้รูปแบบเกมหลากหลาย</h4><p>ใช้รูปแบบเกมที่หลากหลายเพื่อไม่ให้จำเจ</p></div></div>
@@ -1542,17 +1760,17 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 <section class="slide" id="slide10">
     <div class="slide-content" style="max-width: 850px;">
         <h2 class="animate animate-delay-1">การวัดและประเมินผล <span class="gradient-text">จากการปฏิบัติจริง</span></h2>
-        <div class="card-3d animate animate-delay-2" style="margin-top: 1.5rem; padding: 2.5rem; text-align: left;">
-            <p style="color: var(--primary-navy); font-weight: 800; margin-bottom: 1.5rem; font-size: 1.2rem;">วิธีประเมิน</p>
+        <div class="card-3d animate animate-delay-2" style="margin-top: 1.25rem; padding: 2rem; text-align: left;">
+            <p style="color: var(--primary-navy); font-weight: 800; margin-bottom: 1.25rem; font-size: 1.15rem;">วิธีประเมิน</p>
             <div class="ig-stack stagger-list">
                 <div class="stack-item"><div class="stack-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><div class="stack-content"><h4>สังเกตการอ่านออกเสียง</h4></div></div>
                 <div class="stack-item gold"><div class="stack-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></div><div class="stack-content"><h4>การบอกและเชื่อมโยงความหมาย</h4></div></div>
                 <div class="stack-item teal"><div class="stack-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></div><div class="stack-content"><h4>การอ่านและแปลประโยค</h4></div></div>
                 <div class="stack-item red"><div class="stack-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div><div class="stack-content"><h4>ผลงานและพฤติกรรมการมีส่วนร่วม</h4></div></div>
             </div>
-            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px dashed var(--border-light);">
-                <p style="color: var(--accent-gold); font-weight: 700; margin: 0; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <div style="margin-top: 1.75rem; padding-top: 1.75rem; border-top: 2px dashed var(--border-light);">
+                <p style="color: var(--accent-gold); font-weight: 700; margin: 0; font-size: 1rem; display: flex; align-items: center; gap: 8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                     <span><strong>การปรับปรุง</strong> — นำผลมาปรับการช่วยเหลือและฝึกซ้ำให้เหมาะกับแต่ละคน</span>
                 </p>
             </div>
@@ -1657,26 +1875,26 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     <div class="slide-content">
         <h2 class="animate animate-delay-1">การสาธิต<span class="gradient-text">เว็บไซต์และเกม</span></h2>
         <a href="https://tum-service.github.io/1111/" target="_blank" class="btn-primary animate animate-delay-2">🌐 เปิดเว็บไซต์คลังคำศัพท์</a>
-        <div class="image-grid animate animate-delay-3" style="grid-template-columns: repeat(3, 1fr); margin-top: 2.5rem; width: 100%;">
-            <div class="photo-frame"><img src="img_web_1.jpg" alt="หน้าหลัก" style="max-height: 18vh; object-fit: cover; width: 100%;"></div>
-            <div class="photo-frame"><img src="img_web_2.jpg" alt="เกม 1" style="max-height: 18vh; object-fit: cover; width: 100%;"></div>
-            <div class="photo-frame"><img src="img_web_3.jpg" alt="เกม 2" style="max-height: 18vh; object-fit: cover; width: 100%;"></div>
-            <div class="photo-frame"><img src="img_web_4.jpg" alt="เกม 3" style="max-height: 18vh; object-fit: cover; width: 100%;"></div>
-            <div class="photo-frame"><img src="img_web_5.jpg" alt="เกม 4" style="max-height: 18vh; object-fit: cover; width: 100%;"></div>
-            <div class="photo-frame"><img src="img_web_6.jpg" alt="Blooket" style="max-height: 18vh; object-fit: cover; width: 100%;"></div>
+        <div class="image-grid animate animate-delay-3" style="grid-template-columns: repeat(3, 1fr); margin-top: 2rem; width: 100%;">
+            <div class="photo-frame"><img src="img_web_1.jpg" alt="หน้าหลัก"></div>
+            <div class="photo-frame"><img src="img_web_2.jpg" alt="เกม 1"></div>
+            <div class="photo-frame"><img src="img_web_3.jpg" alt="เกม 2"></div>
+            <div class="photo-frame"><img src="img_web_4.jpg" alt="เกม 3"></div>
+            <div class="photo-frame"><img src="img_web_5.jpg" alt="เกม 4"></div>
+            <div class="photo-frame"><img src="img_web_6.jpg" alt="Blooket"></div>
         </div>
-        <p class="animate animate-delay-4" style="margin-top: 2rem; color: var(--text-sub); font-weight: 500; font-size: 1.05rem;">เปิดโอกาสให้คณะกรรมการได้ทดลองกดใช้งานจริง</p>
+        <p class="animate animate-delay-4" style="margin-top: 1.5rem; color: var(--text-sub); font-weight: 500; font-size: 1rem;">เปิดโอกาสให้คณะกรรมการได้ทดลองกดใช้งานจริง</p>
     </div>
 </section>
 
 <!-- SLIDE 18 -->
 <section class="slide" id="slide18">
     <div class="slide-content">
-        <h1 class="animate" style="font-size: clamp(3rem, 8vw, 6rem); color: var(--primary-navy-dark);">ขอบคุณครับ</h1>
-        <p class="animate animate-delay-1" style="font-size: 1.45rem; color: var(--primary-navy); font-weight: 600; margin-top: 1.25rem;">ขอบคุณคณะกรรมการที่รับฟัง</p>
-        <p class="animate animate-delay-2" style="margin-top: 0.65rem; font-size: 1.1rem;">ยินดีรับฟังข้อเสนอแนะ</p>
-        <p class="animate animate-delay-3" style="margin-top: 3rem; color: var(--accent-gold); font-weight: 700; font-size: 1.15rem;">นายศิริศักดิ์ จันทร์อ้าย · โรงเรียนบ้านถิ่นสำราญ</p>
-        <img src="img_group.jpg" alt="ภาพหมู่" class="animate animate-delay-4" style="max-height: 26vh; margin-top: 2rem; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+        <h1 class="animate" style="font-size: clamp(2.5rem, 7vw, 5rem); color: var(--primary-navy-dark);">ขอบคุณครับ</h1>
+        <p class="animate animate-delay-1" style="font-size: 1.35rem; color: var(--primary-navy); font-weight: 600; margin-top: 1.15rem;">ขอบคุณคณะกรรมการที่รับฟัง</p>
+        <p class="animate animate-delay-2" style="margin-top: 0.6rem; font-size: 1.05rem;">ยินดีรับฟังข้อเสนอแนะ</p>
+        <p class="animate animate-delay-3" style="margin-top: 2.5rem; color: var(--accent-gold); font-weight: 700; font-size: 1.05rem;">นายศิริศักดิ์ จันทร์อ้าย · โรงเรียนบ้านถิ่นสำราญ</p>
+        <img src="img_group.jpg" alt="ภาพหมู่" class="animate animate-delay-4" style="max-height: 24vh; margin-top: 1.75rem; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
     </div>
 </section>
 
@@ -1705,15 +1923,9 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 </div>
 
 <script>
-/* ============================================================
-   SOUND ENGINE
-============================================================ */
+/* SOUND ENGINE */
 const SoundEngine = (() => {
-    let ctx = null;
-    let enabled = true;
-    let masterGain = null;
-    let initTried = false;
-
+    let ctx = null, enabled = true, masterGain = null, initTried = false;
     function init() {
         if (ctx || initTried) return;
         initTried = true;
@@ -1724,37 +1936,25 @@ const SoundEngine = (() => {
             masterGain = ctx.createGain();
             masterGain.gain.value = 0.35;
             masterGain.connect(ctx.destination);
-        } catch (e) { console.warn('Web Audio not supported'); }
+        } catch (e) {}
     }
-
-    function resume() {
-        init();
-        if (ctx && ctx.state === 'suspended') ctx.resume();
-    }
-
+    function resume() { init(); if (ctx && ctx.state === 'suspended') ctx.resume(); }
     function playTone(freq, duration, type = 'sine', volume = 0.3, delay = 0, glideTo = null) {
         if (!enabled) return;
         resume();
         if (!ctx) return;
-
         const startTime = ctx.currentTime + delay;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-
         osc.type = type;
         osc.frequency.setValueAtTime(freq, startTime);
         if (glideTo) osc.frequency.exponentialRampToValueAtTime(glideTo, startTime + duration);
-
         gain.gain.setValueAtTime(0, startTime);
         gain.gain.linearRampToValueAtTime(volume, startTime + 0.008);
         gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-
-        osc.connect(gain);
-        gain.connect(masterGain);
-        osc.start(startTime);
-        osc.stop(startTime + duration + 0.05);
+        osc.connect(gain); gain.connect(masterGain);
+        osc.start(startTime); osc.stop(startTime + duration + 0.05);
     }
-
     const sounds = {
         hover() { playTone(880, 0.06, 'sine', 0.12, 0, 1100); },
         click() { playTone(660, 0.08, 'triangle', 0.22); playTone(880, 0.1, 'sine', 0.15, 0.04); },
@@ -1765,14 +1965,9 @@ const SoundEngine = (() => {
         lightboxOpen() { playTone(698.46, 0.14, 'sine', 0.25); playTone(1046.5, 0.2, 'sine', 0.22, 0.07); },
         success() { playTone(523.25, 0.12, 'sine', 0.28); playTone(659.25, 0.12, 'sine', 0.28, 0.1); playTone(783.99, 0.25, 'sine', 0.30, 0.2); }
     };
-
     return {
         play(name) { if (!enabled) return; init(); if (sounds[name]) sounds[name](); },
-        toggle() {
-            enabled = !enabled;
-            if (enabled) { init(); setTimeout(() => this.play('success'), 50); }
-            return enabled;
-        },
+        toggle() { enabled = !enabled; if (enabled) { init(); setTimeout(() => this.play('success'), 50); } return enabled; },
         isEnabled() { return enabled; },
         resume() { resume(); }
     };
@@ -1787,7 +1982,6 @@ document.addEventListener('DOMContentLoaded', () => {
         soundToggle.classList.add('playing');
         setTimeout(() => soundToggle.classList.remove('playing'), 500);
     });
-
     const initOnce = () => {
         SoundEngine.resume();
         document.removeEventListener('click', initOnce);
@@ -1798,21 +1992,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
     const hoverTargets = document.querySelectorAll(
         '.nav-item, .cycle-item, .video-tab-btn, .photo-frame, .btn-primary, .card-3d, .stack-item, .lightbox-nav, .lightbox-close, .step-modal-close, .sound-toggle'
     );
-    hoverTargets.forEach(el => {
-        let hoverTimeout = null;
-        el.addEventListener('mouseenter', () => {
-            if (hoverTimeout) return;
-            SoundEngine.play('hover');
-            hoverTimeout = setTimeout(() => { hoverTimeout = null; }, 120);
+    if (!isTouchDevice) {
+        hoverTargets.forEach(el => {
+            let hoverTimeout = null;
+            el.addEventListener('mouseenter', () => {
+                if (hoverTimeout) return;
+                SoundEngine.play('hover');
+                hoverTimeout = setTimeout(() => { hoverTimeout = null; }, 120);
+            });
         });
-    });
-
-    const clickTargets = document.querySelectorAll(
-        '.nav-item, .video-tab-btn, .photo-frame, .btn-primary, .card-3d, .stack-item, .sound-toggle'
-    );
+    }
+    const clickTargets = document.querySelectorAll('.nav-item, .video-tab-btn, .photo-frame, .btn-primary, .card-3d, .stack-item, .sound-toggle');
     clickTargets.forEach(el => {
         el.addEventListener('click', () => {
             if (el.classList.contains('lightbox-nav') || el.classList.contains('lightbox-close') || el.classList.contains('step-modal-close')) return;
@@ -1822,9 +2016,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/* ============================================================
-   STEP DATA
-============================================================ */
 const STEP_DATA = {
     1: { number: '01', eyebrow: 'ขั้นตอนที่ 1', title: 'ศึกษาและวิเคราะห์', theme: 'navy', body: `
         <p>การศึกษาและวิเคราะห์หลักสูตรแกนกลางการศึกษาขั้นพื้นฐาน กลุ่มสาระการเรียนรู้ภาษาต่างประเทศ (ภาษาอังกฤษ) เพื่อทำความเข้าใจมาตรฐานการเรียนรู้ ตัวชี้วัด และสาระการเรียนรู้ที่เกี่ยวข้อง</p>
@@ -1907,14 +2098,12 @@ function openStepModal(stepNumber) {
     const data = STEP_DATA[stepNumber];
     if (!data) return;
     SoundEngine.play('modalOpen');
-
     const modal = document.getElementById('stepModal');
     document.getElementById('modalNumber').textContent = data.number;
     document.getElementById('modalNumber').className = 'step-modal-number ' + data.theme;
     document.getElementById('modalEyebrow').textContent = data.eyebrow;
     document.getElementById('modalTitle').textContent = data.title;
     document.getElementById('modalBody').innerHTML = data.body;
-
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
 }
@@ -1928,9 +2117,6 @@ function closeStepModal(event) {
     document.body.style.overflow = '';
 }
 
-/* ============================================================
-   MAIN LOGIC
-============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     const slides = document.querySelectorAll('.slide');
     const navItems = document.querySelectorAll('.nav-item');
@@ -1943,7 +2129,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let kpiAnimated = false;
     let lastSlideChangeTime = 0;
 
-    // Dynamic light
     let rafPending = false;
     let targetX = 30, targetY = 20;
     let currentX = 30, currentY = 20;
@@ -1959,46 +2144,37 @@ document.addEventListener('DOMContentLoaded', () => {
         currentY += (targetY - currentY) * 0.12;
         document.documentElement.style.setProperty('--light-x', currentX + '%');
         document.documentElement.style.setProperty('--light-y', currentY + '%');
-        if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) {
-            requestAnimationFrame(smoothLight);
-        } else { rafPending = false; }
+        if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) requestAnimationFrame(smoothLight);
+        else rafPending = false;
     }
 
-    // ★★★ FIXED IntersectionObserver — lower threshold to trigger animations on tall slides ★★★
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('active');
                 const index = Array.from(slides).indexOf(entry.target);
-
                 if (index !== currentSlideIndex && Date.now() - lastSlideChangeTime > 300) {
                     SoundEngine.play('slideChange');
                     lastSlideChangeTime = Date.now();
                 }
                 currentSlideIndex = index;
-
                 navItems.forEach((item, i) => item.classList.toggle('active', i === index));
                 progressBar.style.width = ((index + 1) / slides.length * 100) + '%';
                 if (index > 0) sidebarNav.classList.add('visible');
-
                 if (entry.target.id === 'slide11' && !kpiAnimated) {
                     setTimeout(() => animateKPI(), 400);
                     kpiAnimated = true;
                 }
             }
         });
-    }, {
-        threshold: 0.15,
-        rootMargin: '0px 0px -5% 0px'
-    });
+    }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
 
     slides.forEach(slide => observer.observe(slide));
 
-    // ★★★ FALLBACK: Force activate slide 1 on load ★★★
     setTimeout(() => {
         slides[0].classList.add('active');
         const slide8 = document.getElementById('slide8');
-        if (slide8) slide8.classList.add('active'); // pre-activate slide 8
+        if (slide8) slide8.classList.add('active');
     }, 100);
 
     function animateKPI() {
@@ -2007,7 +2183,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const duration = 2200;
         const start = performance.now();
         const circumference = 2 * Math.PI * 100;
-
         function update(now) {
             const progress = Math.min((now - start) / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 3);
@@ -2025,8 +2200,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     navItems.forEach(item => {
         item.addEventListener('click', () => {
-            const targetId = item.dataset.target;
-            document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById(item.dataset.target)?.scrollIntoView({ behavior: 'smooth' });
         });
     });
 
@@ -2034,28 +2208,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const lightboxOpen = document.getElementById('lightbox').classList.contains('show');
         const modalOpen = document.getElementById('stepModal').classList.contains('show');
         if (lightboxOpen || modalOpen) return;
-
         if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
             e.preventDefault();
             slides[Math.min(currentSlideIndex + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
         } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
             e.preventDefault();
             slides[Math.max(currentSlideIndex - 1, 0)].scrollIntoView({ behavior: 'smooth' });
-        } else if (e.key === 'Home') {
-            e.preventDefault();
-            slides[0].scrollIntoView({ behavior: 'smooth' });
-        } else if (e.key === 'End') {
-            e.preventDefault();
-            slides[slides.length - 1].scrollIntoView({ behavior: 'smooth' });
-        }
+        } else if (e.key === 'Home') { e.preventDefault(); slides[0].scrollIntoView({ behavior: 'smooth' }); }
+        else if (e.key === 'End') { e.preventDefault(); slides[slides.length - 1].scrollIntoView({ behavior: 'smooth' }); }
     });
 
-    // LIGHTBOX
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxCounter = document.getElementById('lightboxCounter');
     const allImages = document.querySelectorAll('img');
-
     let currentImages = [];
     let currentImageIndex = 0;
 
@@ -2072,11 +2238,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 !i.closest('.video-thumbnail') && !i.classList.contains('school-logo') &&
                 !i.closest('.qual-hero-icon') && !i.closest('.cycle-icon') && !i.closest('.cycle-card')
             );
-
             currentImages = imgsInSlide.map(i => i.src);
             currentImageIndex = imgsInSlide.indexOf(this);
             if (currentImages.length === 0) return;
-
             SoundEngine.play('lightboxOpen');
             updateLightbox();
             lightbox.classList.add('show');
@@ -2093,12 +2257,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentImageIndex < currentImages.length - 1) { currentImageIndex++; SoundEngine.play('click'); updateLightbox(); }
         else closeLightbox();
     };
-
     window.prevImage = function() {
         if (currentImageIndex > 0) { currentImageIndex--; SoundEngine.play('click'); updateLightbox(); }
         else closeLightbox();
     };
-
     window.closeLightbox = function() {
         SoundEngine.play('modalClose');
         lightbox.classList.remove('show');
@@ -2107,7 +2269,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     lightbox.addEventListener('click', function(e) { if (e.target === lightbox) closeLightbox(); });
-
     document.addEventListener('keydown', function(e) {
         if (lightbox.classList.contains('show')) {
             if (e.key === 'Escape') closeLightbox();
@@ -2115,7 +2276,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'ArrowLeft') prevImage();
         }
     });
-
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             const modal = document.getElementById('stepModal');
@@ -2131,10 +2291,8 @@ function selectVideo(fileId, thumbnailSrc, btnElement) {
     currentFileId = fileId;
     document.querySelectorAll('.video-tab-btn').forEach(btn => btn.classList.remove('active'));
     btnElement.classList.add('active');
-
     const mainThumbnail = document.getElementById('mainThumbnail');
     if (mainThumbnail) mainThumbnail.src = thumbnailSrc;
-
     const thumbnail = document.getElementById('videoThumbnail');
     const frame = document.getElementById('videoFrame');
     thumbnail.style.display = 'block';
