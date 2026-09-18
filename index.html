@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <meta name="theme-color" content="#1e3a8a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>การพัฒนาความสามารถในการอ่านและเข้าใจความหมายคำศัพท์ภาษาอังกฤษ</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,13 +48,17 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* ปุ่ม/ลิงก์ — ลด tap highlight บน iOS */
+button, a, [onclick] { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
 html {
     scroll-behavior: smooth;
     scroll-snap-type: y mandatory;
-    overflow-y: scroll;
+    overscroll-behavior-y: none;
     background: var(--bg-base);
     font-size: 16px;
     -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 body {
@@ -63,28 +69,25 @@ body {
     overflow-x: hidden;
     line-height: 1.7;
     background: var(--bg-base);
-    /* ★ ป้องกันคำขาดกลางคำ - ภาษาไทยและอังกฤษ ★ */
-    word-break: keep-all;
+    /* ★ ป้องกันคำขาดกลางคำ — ใช้ normal เพื่อให้ Thai line-breaking ของ Safari ทำงานถูกต้อง ★ */
+    word-break: normal;
     overflow-wrap: break-word;
-    hyphens: auto;
-    -webkit-hyphens: auto;
 }
 
-/* ★ Global rule: ห้ามคำขาดกลางคำ ★ */
+/* ★ Global rule ★ */
 p, li, h1, h2, h3, h4, h5, h6, span, a, div, .card-text, .stack-content p, .qual-hero-desc,
 .cycle-sub, .cycle-title, .caption, .step-modal-body p, .step-modal-body li {
-    word-break: keep-all;
+    word-break: normal;
     overflow-wrap: break-word;
-    hyphens: auto;
     -webkit-hyphens: auto;
     -moz-hyphens: auto;
-    text-wrap: pretty;
+    hyphens: auto;
 }
 
 body::before {
     content: '';
     position: fixed;
-    inset: 0;
+    top: 0; right: 0; bottom: 0; left: 0;
     background:
         radial-gradient(ellipse 60% 50% at 15% 20%, rgba(59, 130, 246, 0.10) 0%, transparent 55%),
         radial-gradient(ellipse 50% 40% at 85% 75%, rgba(245, 158, 11, 0.08) 0%, transparent 55%),
@@ -98,6 +101,11 @@ body::before {
     0%   { transform: translate(0, 0) scale(1); }
     50%  { transform: translate(-2%, 1%) scale(1.05); }
     100% { transform: translate(2%, -1%) scale(1); }
+}
+
+/* ★ Safari/iOS: ปิด animation พื้นหลังเพื่อประสิทธิภาพการ scroll ★ */
+@media (hover: none) {
+    body::before { animation: none; }
 }
 
 /* SOUND TOGGLE */
@@ -118,6 +126,8 @@ body::before {
     justify-content: center;
     transition: all 0.4s var(--ease-out-expo);
     box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 4px 8px rgba(15, 23, 42, 0.06), 0 12px 24px -4px rgba(30, 58, 138, 0.15);
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .sound-toggle:hover { transform: translateY(-4px) scale(1.08); color: var(--primary-navy-light); border-color: rgba(59, 130, 246, 0.4); }
@@ -130,7 +140,7 @@ body::before {
 .sound-toggle.playing { animation: soundPulse 0.5s var(--ease-out-back); }
 @keyframes soundPulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
-/* ★★★ FULLSCREEN TOGGLE (NEW) ★★★ */
+/* ★★★ FULLSCREEN TOGGLE ★★★ */
 .fullscreen-toggle {
     position: fixed;
     top: 24px;
@@ -148,6 +158,8 @@ body::before {
     justify-content: center;
     transition: all 0.4s var(--ease-out-expo);
     box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 4px 8px rgba(15, 23, 42, 0.06), 0 12px 24px -4px rgba(30, 58, 138, 0.15);
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .fullscreen-toggle:hover { transform: translateY(-4px) scale(1.08); color: var(--primary-navy-light); border-color: rgba(59, 130, 246, 0.4); }
@@ -172,6 +184,8 @@ body::before {
     width: 0%;
     transition: width 0.15s var(--ease-out-expo);
     box-shadow: 0 0 12px rgba(30, 58, 138, 0.6);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 /* SIDEBAR NAV */
@@ -180,6 +194,7 @@ body::before {
     left: 20px;
     top: 50%;
     transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
     z-index: 100;
     display: flex;
     flex-direction: column;
@@ -204,7 +219,7 @@ body::before {
 .nav-item::before {
     content: '';
     position: absolute;
-    inset: 0;
+    top: 0; right: 0; bottom: 0; left: 0;
     border-radius: 12px;
     background: linear-gradient(90deg, rgba(30, 58, 138, 0.08), rgba(59, 130, 246, 0.04));
     opacity: 0;
@@ -252,8 +267,8 @@ body::before {
 /* SLIDE LAYOUT */
 .slide {
     min-height: 100vh;
-    min-height: 100dvh;
     min-height: 100svh;
+    min-height: 100dvh;
     width: 100%;
     scroll-snap-align: start;
     display: flex;
@@ -265,6 +280,7 @@ body::before {
     padding-bottom: max(clamp(2rem, 5vw, 4rem), env(safe-area-inset-bottom));
     position: relative;
     z-index: 2;
+    -webkit-perspective: 1600px;
     perspective: 1600px;
 }
 
@@ -288,6 +304,7 @@ body::before {
     align-items: center;
     width: 100%;
     max-width: 1200px;
+    -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
 }
 
@@ -302,7 +319,6 @@ h1 {
     line-height: 1.15;
     margin-bottom: 1.25rem;
     color: var(--primary-navy-dark);
-    text-wrap: balance;
     text-shadow: 0 1px 0 rgba(255,255,255,0.9), 0 2px 0 rgba(30,58,138,0.12), 0 4px 6px rgba(15,23,42,0.10);
 }
 
@@ -314,7 +330,6 @@ h2 {
     line-height: 1.25;
     margin-bottom: 1.5rem;
     color: var(--primary-navy);
-    text-wrap: balance;
     text-shadow: 0 1px 0 rgba(255,255,255,0.95), 0 2px 0 rgba(30,58,138,0.15), 0 4px 8px rgba(15,23,42,0.12);
 }
 
@@ -325,7 +340,6 @@ h3 {
     color: var(--primary-navy);
     margin-bottom: 0.6rem;
     line-height: 1.4;
-    text-wrap: balance;
 }
 
 p, li {
@@ -383,7 +397,7 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
     margin: 1.5rem auto 0;
 }
 
-.cycle-svg-bg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.cycle-svg-bg { position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
 
 .cycle-circle-track {
     fill: none;
@@ -542,7 +556,7 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 .cycle-center::before {
     content: '';
     position: absolute;
-    inset: 0;
+    top: 0; right: 0; bottom: 0; left: 0;
     border-radius: 50%;
     background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.4) 0%, transparent 45%);
     pointer-events: none;
@@ -553,6 +567,7 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
     height: 54px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.2);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
@@ -593,15 +608,15 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 /* STEP MODAL */
 .step-modal {
     position: fixed;
-    inset: 0;
+    top: 0; right: 0; bottom: 0; left: 0;
     z-index: 9000;
     display: none;
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
     background: rgba(8, 12, 24, 0.75);
-    backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
     opacity: 0;
     transition: opacity 0.4s ease;
 }
@@ -614,13 +629,13 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
     max-width: 620px;
     max-height: 88vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%);
     border-radius: 28px;
     padding: 2.5rem 2rem 2rem;
     box-shadow: inset 0 2px 0 rgba(255, 255, 255, 1), 0 32px 64px -12px rgba(30, 58, 138, 0.35);
     transform: scale(0.85) translateY(30px);
     transition: transform 0.5s var(--ease-out-back);
-    -webkit-overflow-scrolling: touch;
 }
 
 .step-modal.show .step-modal-content {
@@ -659,6 +674,8 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
     font-size: 22px;
     font-weight: 300;
     line-height: 1;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .step-modal-close:hover { background: var(--primary-navy); color: #fff; transform: rotate(90deg) scale(1.1); }
@@ -796,8 +813,8 @@ strong { font-weight: 700; color: var(--primary-navy-dark); }
 
 .glass-card {
     background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(30px) saturate(200%);
     -webkit-backdrop-filter: blur(30px) saturate(200%);
+    backdrop-filter: blur(30px) saturate(200%);
     border: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: 20px;
     padding: 1.75rem;
@@ -880,6 +897,8 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     gap: 6px;
     box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 1), 0 2px 4px rgba(15, 23, 42, 0.04), 0 8px 16px -4px rgba(30, 58, 138, 0.08);
     -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .video-tab-btn:hover {
@@ -913,10 +932,10 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 
 .video-container:hover { transform: translateY(-6px); }
 
-.video-thumbnail { position: absolute; inset: 0; cursor: pointer; transition: opacity 0.3s ease; }
+.video-thumbnail { position: absolute; top: 0; right: 0; bottom: 0; left: 0; cursor: pointer; transition: opacity 0.3s ease; }
 .video-thumbnail img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; box-shadow: none; margin: 0; cursor: pointer; }
 .video-thumbnail .overlay {
-    position: absolute; inset: 0;
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0;
     background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%);
     display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
     padding: 1.5rem; text-align: center; pointer-events: none;
@@ -925,7 +944,9 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 .video-thumbnail .play-icon {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
     width: 72px; height: 72px; border-radius: 50%;
-    background: rgba(255, 255, 255, 0.22); backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.22);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     border: 2.5px solid rgba(255, 255, 255, 0.7);
     display: flex; align-items: center; justify-content: center;
     transition: all 0.5s var(--ease-out-back);
@@ -1022,7 +1043,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 
 .qual-hero-icon::before {
     content: '';
-    position: absolute; inset: 0; border-radius: 44px;
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0; border-radius: 44px;
     background: linear-gradient(160deg, rgba(255, 255, 255, 0.75) 0%, transparent 45%);
     pointer-events: none; z-index: 2;
 }
@@ -1038,7 +1059,6 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     margin-bottom: 1.5rem;
     line-height: 1.2;
     text-shadow: 0 1px 0 rgba(255,255,255,0.95), 0 2px 0 rgba(30,58,138,0.12), 0 14px 24px rgba(30,58,138,0.15);
-    text-wrap: balance;
 }
 
 .qual-hero-desc {
@@ -1056,18 +1076,34 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 .theme-red .qual-hero-icon { background: linear-gradient(160deg, #fef2f2 0%, #fee2e2 55%, #fecaca 100%); color: #ef4444; box-shadow: inset 0 2px 0 rgba(255,255,255,1), 0 16px 32px -4px rgba(239,68,68,0.25); }
 
 /* Lightbox */
-.lightbox { display: none; position: fixed; z-index: 10000; inset: 0; background: rgba(8, 12, 24, 0.92); justify-content: center; align-items: center; opacity: 0; transition: opacity 0.35s ease; backdrop-filter: blur(20px); }
+.lightbox {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background: rgba(8, 12, 24, 0.92);
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+}
 .lightbox.show { display: flex; opacity: 1; }
 .lightbox img { max-width: 88%; max-height: 85%; border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6); object-fit: contain; cursor: default; }
 
 .lightbox-close {
     position: absolute; top: 24px; right: 30px; color: #fff; font-size: 42px; font-weight: 300; cursor: pointer; line-height: 1;
     transition: all 0.4s var(--ease-out-expo); z-index: 10002;
-    background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     border: 1.5px solid rgba(255, 255, 255, 0.25);
     width: 54px; height: 54px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .lightbox-close:hover { color: var(--accent-gold-light); background: rgba(255, 255, 255, 0.25); transform: rotate(90deg) scale(1.1); }
@@ -1079,6 +1115,8 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     display: flex; align-items: center; justify-content: center;
     transition: all 0.4s var(--ease-out-expo);
     -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .lightbox-nav:hover { background: rgba(255, 255, 255, 0.3); color: var(--accent-gold-light); transform: translateY(-50%) scale(1.15); }
@@ -1089,7 +1127,9 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
     color: #fff; font-family: var(--font-display); font-size: 1.1rem; font-weight: 700;
     background: rgba(255, 255, 255, 0.12); padding: 10px 26px; border-radius: 50px;
-    backdrop-filter: blur(20px); letter-spacing: 0.1em;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    letter-spacing: 0.1em;
 }
 
 /* Button */
@@ -1105,6 +1145,8 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     position: relative; overflow: hidden;
     -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .btn-primary::before {
@@ -1161,13 +1203,11 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 
     .slide {
         padding: 2rem 1rem;
-        padding-top: max(2rem, env(safe-area-inset-top));
+        padding-top: max(3.5rem, env(safe-area-inset-top));
         padding-bottom: max(2rem, env(safe-area-inset-bottom));
         justify-content: flex-start;
-        padding-top: max(3.5rem, env(safe-area-inset-top));
     }
 
-    /* Force vertical layout */
     .split-layout,
     .split-layout.asymmetric {
         grid-template-columns: 1fr !important;
@@ -1179,25 +1219,21 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     .ig-grid-3 { grid-template-columns: 1fr !important; gap: 1.25rem; margin-top: 1.25rem; }
     .image-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.75rem; }
 
-    /* Typography mobile */
     h1 { font-size: clamp(1.6rem, 6.5vw, 2.2rem); line-height: 1.2; margin-bottom: 1rem; letter-spacing: -0.02em; }
     h2 { font-size: clamp(1.35rem, 5.5vw, 1.9rem); line-height: 1.25; margin-bottom: 1rem; }
     h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
 
     p, li { font-size: 0.95rem; line-height: 1.65; }
 
-    /* Logo & teacher image */
     .school-logo { max-height: 75px; margin-bottom: 0.85rem; }
     .teacher-img { max-height: 35vh; }
 
-    /* Video */
     .video-tabs { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; padding-bottom: 6px; gap: 8px; -webkit-overflow-scrolling: touch; }
     .video-tabs::-webkit-scrollbar { display: none; }
     .video-tab-btn { flex-shrink: 0; font-size: 0.85rem; padding: 0.6rem 1rem; }
     .video-tab-btn svg { width: 12px; height: 12px; }
     .video-container { max-width: 100%; }
 
-    /* KPI */
     .kpi-dashboard { grid-template-columns: 1fr; padding: 1.5rem; gap: 1.5rem; margin-top: 1rem; }
     .kpi-chart-container { width: 170px; height: 170px; }
     .kpi-number { font-size: 2.85rem; }
@@ -1207,7 +1243,6 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     .kpi-info h3 { font-size: 1.15rem; }
     .kpi-info p { font-size: 0.95rem; }
 
-    /* Stack */
     .stack-item { padding: 1rem 1.15rem; gap: 0.85rem; border-left-width: 4px; }
     .stack-item:hover { transform: translateX(6px); border-left-width: 6px; }
     .stack-icon { width: 40px; height: 40px; border-radius: 11px; }
@@ -1215,20 +1250,16 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     .stack-content h4 { font-size: 1rem; margin-bottom: 0.15rem; }
     .stack-content p { font-size: 0.88rem; line-height: 1.5; }
 
-    /* Card 3D */
     .card-3d { padding: 1.5rem 1.25rem; }
     .card-title { font-size: 1.05rem; }
     .card-text { font-size: 0.92rem; }
 
-    /* Photo frames - smaller for mobile */
     .photo-frame { border-radius: 14px; }
     .photo-frame img { border-radius: 14px; }
 
-    /* Image grid 2 columns on mobile */
     .image-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
     .image-grid img { max-height: 16vh; object-fit: cover; width: 100%; border-radius: 12px; }
 
-    /* Cycle - Smaller for mobile 9:16 */
     .cycle-wrapper {
         width: min(440px, 92vw);
         height: min(440px, 92vw);
@@ -1281,7 +1312,6 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     .cycle-sub { font-size: 0.66rem; line-height: 1.25; }
     .cycle-hint { display: none; }
 
-    /* Qual hero */
     .qual-hero-icon {
         width: 110px;
         height: 110px;
@@ -1292,7 +1322,6 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     .qual-hero-title { font-size: 1.6rem; margin-bottom: 1rem; }
     .qual-hero-desc { font-size: 1rem; line-height: 1.7; }
 
-    /* Modal */
     .step-modal { padding: 1rem; }
     .step-modal-content {
         padding: 1.75rem 1.25rem 1.5rem;
@@ -1314,7 +1343,6 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     .step-modal-body li { font-size: 0.92rem; }
     .step-modal-highlight p { font-size: 0.92rem; }
 
-    /* Lightbox */
     .lightbox-close { top: 12px; right: 12px; font-size: 32px; width: 46px; height: 46px; }
     .lightbox-nav { width: 48px; height: 48px; font-size: 30px; }
     .lightbox-nav.prev { left: 10px; }
@@ -1322,17 +1350,13 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     .lightbox img { max-width: 94%; max-height: 78%; }
     .lightbox-counter { bottom: 20px; font-size: 0.9rem; padding: 8px 18px; }
 
-    /* Sound toggle */
     .sound-toggle { bottom: 12px; right: 12px; width: 46px; height: 46px; }
     .sound-toggle svg { width: 20px; height: 20px; }
 
-    /* Button */
     .btn-primary { font-size: 1rem; padding: 0.95rem 2rem; margin-top: 1.25rem; width: 100%; max-width: 320px; justify-content: center; }
 
-    /* Glass card */
     .glass-card { padding: 1.25rem; }
 
-    /* Prevent hover effects on mobile (use tap instead) */
     .card-3d:hover { transform: none; }
     .stack-item:hover { transform: none; border-left-width: 4px; }
     .photo-frame:hover { transform: none; }
@@ -1358,7 +1382,6 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 
     .school-logo { max-height: 65px; }
 
-    /* Even smaller cycle for 9:16 portrait */
     .cycle-wrapper {
         width: min(360px, 92vw);
         height: min(360px, 92vw);
@@ -1416,7 +1439,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 }
 
 /* ============================================================
-   ★★★ MOBILE LANDSCAPE (เช่น มือถือหมุนแนวนอน) ★★★
+   ★★★ MOBILE LANDSCAPE ★★★
 ============================================================ */
 @media (max-width: 900px) and (orientation: landscape) {
     .slide {
@@ -1447,7 +1470,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 }
 
 /* ============================================================
-   ★★★ HEIGHT-BASED QUERIES (สำหรับหน้าจอเตี้ย) ★★★
+   ★★★ HEIGHT-BASED QUERIES ★★★
 ============================================================ */
 @media (max-height: 700px) and (min-width: 769px) {
     .slide { padding: 1.5rem clamp(1.25rem, 4vw, 4rem); }
@@ -1490,8 +1513,17 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 </head>
 <body>
 
-<!-- ★★★ ปุ่มเต็มหน้าจอ (Fullscreen Button) ★★★ -->
-<button class="fullscreen-toggle" id="fullscreenToggle" aria-label="เปิด/ปิดเต็มหน้าจอ">
+<!-- ★ Fallback กรณีไม่มี JavaScript ★ -->
+<noscript>
+<style>
+    .animate { opacity: 1 !important; transform: none !important; }
+    .stagger-list .stack-item, .stagger-list .card-3d { opacity: 1 !important; transform: none !important; }
+    .cycle-item { opacity: 1 !important; }
+</style>
+</noscript>
+
+<!-- ★★★ ปุ่มเต็มหน้าจอ ★★★ -->
+<button class="fullscreen-toggle" id="fullscreenToggle" aria-label="เปิด/ปิดเต็มหน้าจอ" type="button">
     <svg class="icon-expand" viewBox="0 0 24 24">
         <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
     </svg>
@@ -1500,7 +1532,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
     </svg>
 </button>
 
-<button class="sound-toggle" id="soundToggle" aria-label="เปิด/ปิดเสียง">
+<button class="sound-toggle" id="soundToggle" aria-label="เปิด/ปิดเสียง" type="button">
     <svg class="icon-sound" viewBox="0 0 24 24">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
         <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -1721,7 +1753,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
             <div class="card-3d">
                 <div class="photo-frame" style="margin-bottom: 1.25rem;"><img src="img_web_1.jpg" alt="เว็บไซต์" style="width: 100%; height: 160px; object-fit: cover; border-radius: 14px;"></div>
                 <h3 class="card-title">เว็บไซต์ที่พัฒนาขึ้นเอง</h3>
-                <p class="card-text"><a href="https://tum-service.github.io/1111/" target="_blank" style="color: var(--primary-navy); text-decoration: none; font-weight: 700;">tum-service.github.io/1111/</a></p>
+                <p class="card-text"><a href="https://tum-service.github.io/1111/" target="_blank" rel="noopener noreferrer" style="color: var(--primary-navy); text-decoration: none; font-weight: 700;">tum-service.github.io/1111/</a></p>
             </div>
         </div>
     </div>
@@ -1760,10 +1792,10 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
         </div>
 
         <div class="video-tabs animate animate-delay-4">
-            <button class="video-tab-btn active" onclick="selectVideo('175KCwtHjGok9_tSQz0DxqptXZYEwIf4T', 'thumb1.jpg', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอ 1</button>
-            <button class="video-tab-btn" onclick="selectVideo('1gLO4Qr15WbjjD5NheaXqsn6JV9YpjwI8', 'thumb2.jpg', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอ 2</button>
-            <button class="video-tab-btn" onclick="selectVideo('1pxGuOzM1hECrzvqcHGUjaG9arH0yk-qz', 'thumb3.jpg', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอ 3</button>
-            <button class="video-tab-btn" onclick="selectVideo('170huuZcEl-Tc05jCV0zCy385wRQC-84x', 'thumb4.jpg', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอ 4</button>
+            <button type="button" class="video-tab-btn active" onclick="selectVideo('175KCwtHjGok9_tSQz0DxqptXZYEwIf4T', 'thumb1.jpg', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอ 1</button>
+            <button type="button" class="video-tab-btn" onclick="selectVideo('1gLO4Qr15WbjjD5NheaXqsn6JV9YpjwI8', 'thumb2.jpg', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอ 2</button>
+            <button type="button" class="video-tab-btn" onclick="selectVideo('1pxGuOzM1hECrzvqcHGUjaG9arH0yk-qz', 'thumb3.jpg', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอ 3</button>
+            <button type="button" class="video-tab-btn" onclick="selectVideo('170huuZcEl-Tc05jCV0zCy385wRQC-84x', 'thumb4.jpg', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>วิดีโอ 4</button>
         </div>
 
         <div class="video-container animate animate-delay-4">
@@ -1772,7 +1804,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
                 <div class="play-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
                 <div class="overlay"><p id="videoCaption">คลิกเพื่อเล่นวิดีโอ</p></div>
             </div>
-            <iframe id="videoFrame" class="video-frame" allow="autoplay; fullscreen" allowfullscreen></iframe>
+            <iframe id="videoFrame" class="video-frame" allow="autoplay; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
         </div>
     </div>
 </section>
@@ -1916,7 +1948,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 <section class="slide" id="slide17">
     <div class="slide-content">
         <h2 class="animate animate-delay-1">การสาธิต<span class="gradient-text">เว็บไซต์และเกม</span></h2>
-        <a href="https://tum-service.github.io/1111/" target="_blank" class="btn-primary animate animate-delay-2">🌐 เปิดเว็บไซต์คลังคำศัพท์</a>
+        <a href="https://tum-service.github.io/1111/" target="_blank" rel="noopener noreferrer" class="btn-primary animate animate-delay-2">🌐 เปิดเว็บไซต์คลังคำศัพท์</a>
         <div class="image-grid animate animate-delay-3" style="grid-template-columns: repeat(3, 1fr); margin-top: 2rem; width: 100%;">
             <div class="photo-frame"><img src="img_web_1.jpg" alt="หน้าหลัก"></div>
             <div class="photo-frame"><img src="img_web_2.jpg" alt="เกม 1"></div>
@@ -1943,7 +1975,7 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 <!-- STEP MODAL -->
 <div class="step-modal" id="stepModal" onclick="closeStepModal(event)">
     <div class="step-modal-content" onclick="event.stopPropagation()">
-        <button class="step-modal-close" onclick="closeStepModal()">&times;</button>
+        <button type="button" class="step-modal-close" onclick="closeStepModal()">&times;</button>
         <div class="step-modal-header">
             <div class="step-modal-number" id="modalNumber">01</div>
             <div class="step-modal-titles">
@@ -1957,22 +1989,24 @@ img { max-width: 100%; height: auto; border-radius: 16px; object-fit: contain; d
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
-    <button class="lightbox-nav prev" onclick="prevImage()">&#10094;</button>
+    <button type="button" class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <button type="button" class="lightbox-nav prev" onclick="prevImage()">&#10094;</button>
     <img src="" alt="Fullscreen Image" id="lightboxImg">
-    <button class="lightbox-nav next" onclick="nextImage()">&#10095;</button>
+    <button type="button" class="lightbox-nav next" onclick="nextImage()">&#10095;</button>
     <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
 </div>
 
 <script>
-/* SOUND ENGINE */
-const SoundEngine = (() => {
-    let ctx = null, enabled = true, masterGain = null, initTried = false;
+/* ============================================================
+   SOUND ENGINE
+============================================================ */
+var SoundEngine = (function () {
+    var ctx = null, enabled = true, masterGain = null, initTried = false;
     function init() {
         if (ctx || initTried) return;
         initTried = true;
         try {
-            const AC = window.AudioContext || window.webkitAudioContext;
+            var AC = window.AudioContext || window.webkitAudioContext;
             if (!AC) return;
             ctx = new AC();
             masterGain = ctx.createGain();
@@ -1981,13 +2015,16 @@ const SoundEngine = (() => {
         } catch (e) {}
     }
     function resume() { init(); if (ctx && ctx.state === 'suspended') ctx.resume(); }
-    function playTone(freq, duration, type = 'sine', volume = 0.3, delay = 0, glideTo = null) {
+    function playTone(freq, duration, type, volume, delay, glideTo) {
         if (!enabled) return;
         resume();
         if (!ctx) return;
-        const startTime = ctx.currentTime + delay;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+        type = type || 'sine';
+        volume = (volume === undefined) ? 0.3 : volume;
+        delay = delay || 0;
+        var startTime = ctx.currentTime + delay;
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
         osc.type = type;
         osc.frequency.setValueAtTime(freq, startTime);
         if (glideTo) osc.frequency.exponentialRampToValueAtTime(glideTo, startTime + duration);
@@ -1997,69 +2034,77 @@ const SoundEngine = (() => {
         osc.connect(gain); gain.connect(masterGain);
         osc.start(startTime); osc.stop(startTime + duration + 0.05);
     }
-    const sounds = {
-        hover() { playTone(880, 0.06, 'sine', 0.12, 0, 1100); },
-        click() { playTone(660, 0.08, 'triangle', 0.22); playTone(880, 0.1, 'sine', 0.15, 0.04); },
-        modalOpen() { playTone(523.25, 0.15, 'sine', 0.28); playTone(783.99, 0.22, 'sine', 0.28, 0.09); },
-        modalClose() { playTone(783.99, 0.13, 'sine', 0.25); playTone(523.25, 0.2, 'sine', 0.25, 0.09); },
-        slideChange() { playTone(220, 0.18, 'sine', 0.12, 0, 440); },
-        videoClick() { playTone(587.33, 0.1, 'triangle', 0.22); playTone(880, 0.14, 'sine', 0.18, 0.06); },
-        lightboxOpen() { playTone(698.46, 0.14, 'sine', 0.25); playTone(1046.5, 0.2, 'sine', 0.22, 0.07); },
-        success() { playTone(523.25, 0.12, 'sine', 0.28); playTone(659.25, 0.12, 'sine', 0.28, 0.1); playTone(783.99, 0.25, 'sine', 0.30, 0.2); }
+    var sounds = {
+        hover: function () { playTone(880, 0.06, 'sine', 0.12, 0, 1100); },
+        click: function () { playTone(660, 0.08, 'triangle', 0.22); playTone(880, 0.1, 'sine', 0.15, 0.04); },
+        modalOpen: function () { playTone(523.25, 0.15, 'sine', 0.28); playTone(783.99, 0.22, 'sine', 0.28, 0.09); },
+        modalClose: function () { playTone(783.99, 0.13, 'sine', 0.25); playTone(523.25, 0.2, 'sine', 0.25, 0.09); },
+        slideChange: function () { playTone(220, 0.18, 'sine', 0.12, 0, 440); },
+        videoClick: function () { playTone(587.33, 0.1, 'triangle', 0.22); playTone(880, 0.14, 'sine', 0.18, 0.06); },
+        lightboxOpen: function () { playTone(698.46, 0.14, 'sine', 0.25); playTone(1046.5, 0.2, 'sine', 0.22, 0.07); },
+        success: function () { playTone(523.25, 0.12, 'sine', 0.28); playTone(659.25, 0.12, 'sine', 0.28, 0.1); playTone(783.99, 0.25, 'sine', 0.30, 0.2); }
     };
     return {
-        play(name) { if (!enabled) return; init(); if (sounds[name]) sounds[name](); },
-        toggle() { enabled = !enabled; if (enabled) { init(); setTimeout(() => this.play('success'), 50); } return enabled; },
-        isEnabled() { return enabled; },
-        resume() { resume(); }
+        play: function (name) { if (!enabled) return; init(); if (sounds[name]) sounds[name](); },
+        toggle: function () { enabled = !enabled; if (enabled) { init(); var self = this; setTimeout(function () { self.play('success'); }, 50); } return enabled; },
+        isEnabled: function () { return enabled; },
+        resume: function () { resume(); }
     };
 })();
 
-document.addEventListener('DOMContentLoaded', () => {
-    const soundToggle = document.getElementById('soundToggle');
-    soundToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOn = SoundEngine.toggle();
-        soundToggle.classList.toggle('muted', !isOn);
-        soundToggle.classList.add('playing');
-        setTimeout(() => soundToggle.classList.remove('playing'), 500);
-    });
-    const initOnce = () => {
+document.addEventListener('DOMContentLoaded', function () {
+    var soundToggle = document.getElementById('soundToggle');
+    if (soundToggle) {
+        soundToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var isOn = SoundEngine.toggle();
+            soundToggle.classList.toggle('muted', !isOn);
+            soundToggle.classList.add('playing');
+            setTimeout(function () { soundToggle.classList.remove('playing'); }, 500);
+        });
+    }
+    var initOnce = function () {
         SoundEngine.resume();
         document.removeEventListener('click', initOnce);
         document.removeEventListener('keydown', initOnce);
+        document.removeEventListener('touchstart', initOnce);
     };
     document.addEventListener('click', initOnce);
     document.addEventListener('keydown', initOnce);
+    document.addEventListener('touchstart', initOnce, { passive: true });
 });
 
-/* ★★★ FULLSCREEN SCRIPT (NEW) ★★★ */
-document.addEventListener('DOMContentLoaded', () => {
-    const fullscreenToggle = document.getElementById('fullscreenToggle');
+/* ============================================================
+   FULLSCREEN  (พร้อม fallback สำหรับ Safari เก่า)
+============================================================ */
+document.addEventListener('DOMContentLoaded', function () {
+    var fullscreenToggle = document.getElementById('fullscreenToggle');
     if (!fullscreenToggle) return;
 
-    fullscreenToggle.addEventListener('click', () => {
+    fullscreenToggle.addEventListener('click', function () {
         SoundEngine.play('click');
-        
-        const doc = document;
-        const docEl = doc.documentElement;
+        var doc = document;
+        var docEl = doc.documentElement;
 
-        const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-        const cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+        var requestFullScreen = docEl.requestFullscreen || docEl.webkitRequestFullScreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
+        var cancelFullScreen = doc.exitFullscreen || doc.webkitExitFullscreen || doc.webkitCancelFullScreen || doc.mozCancelFullScreen || doc.msExitFullscreen;
 
-        if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+        var isFull = doc.fullscreenElement || doc.webkitFullscreenElement || doc.webkitCurrentFullScreenElement || doc.mozFullScreenElement || doc.msFullscreenElement;
+
+        if (!isFull) {
             if (requestFullScreen) {
-                requestFullScreen.call(docEl);
+                try { requestFullScreen.call(docEl); } catch (err) {}
             }
         } else {
             if (cancelFullScreen) {
-                cancelFullScreen.call(doc);
+                try { cancelFullScreen.call(doc); } catch (err) {}
             }
         }
     });
 
     function updateFullscreenIcon() {
-        const isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+        var doc = document;
+        var isFullscreen = doc.fullscreenElement || doc.webkitFullscreenElement || doc.webkitCurrentFullScreenElement || doc.mozFullScreenElement || doc.msFullscreenElement;
         if (isFullscreen) {
             fullscreenToggle.classList.add('active');
         } else {
@@ -2068,29 +2113,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.addEventListener('fullscreenchange', updateFullscreenIcon);
-    document.addEventListener('mozfullscreenchange', updateFullscreenIcon);
     document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+    document.addEventListener('mozfullscreenchange', updateFullscreenIcon);
     document.addEventListener('MSFullscreenChange', updateFullscreenIcon);
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-    const hoverTargets = document.querySelectorAll(
+/* ============================================================
+   HOVER / CLICK SOUND
+============================================================ */
+document.addEventListener('DOMContentLoaded', function () {
+    var isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    var hoverTargets = document.querySelectorAll(
         '.nav-item, .cycle-item, .video-tab-btn, .photo-frame, .btn-primary, .card-3d, .stack-item, .lightbox-nav, .lightbox-close, .step-modal-close, .sound-toggle, .fullscreen-toggle'
     );
     if (!isTouchDevice) {
-        hoverTargets.forEach(el => {
-            let hoverTimeout = null;
-            el.addEventListener('mouseenter', () => {
+        hoverTargets.forEach(function (el) {
+            var hoverTimeout = null;
+            el.addEventListener('mouseenter', function () {
                 if (hoverTimeout) return;
                 SoundEngine.play('hover');
-                hoverTimeout = setTimeout(() => { hoverTimeout = null; }, 120);
+                hoverTimeout = setTimeout(function () { hoverTimeout = null; }, 120);
             });
         });
     }
-    const clickTargets = document.querySelectorAll('.nav-item, .video-tab-btn, .photo-frame, .btn-primary, .card-3d, .stack-item, .sound-toggle, .fullscreen-toggle');
-    clickTargets.forEach(el => {
-        el.addEventListener('click', () => {
+    var clickTargets = document.querySelectorAll('.nav-item, .video-tab-btn, .photo-frame, .btn-primary, .card-3d, .stack-item, .sound-toggle, .fullscreen-toggle');
+    clickTargets.forEach(function (el) {
+        el.addEventListener('click', function () {
             if (el.classList.contains('lightbox-nav') || el.classList.contains('lightbox-close') || el.classList.contains('step-modal-close')) return;
             if (el.closest('.cycle-item')) return;
             SoundEngine.play('click');
@@ -2098,89 +2146,92 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-const STEP_DATA = {
-    1: { number: '01', eyebrow: 'ขั้นตอนที่ 1', title: 'ศึกษาและวิเคราะห์', theme: 'navy', body: `
-        <p>การศึกษาและวิเคราะห์หลักสูตรแกนกลางการศึกษาขั้นพื้นฐาน กลุ่มสาระการเรียนรู้ภาษาต่างประเทศ (ภาษาอังกฤษ) เพื่อทำความเข้าใจมาตรฐานการเรียนรู้ ตัวชี้วัด และสาระการเรียนรู้ที่เกี่ยวข้อง</p>
-        <p>วิเคราะห์บริบทของผู้เรียน ได้แก่ ระดับชั้น จำนวนนักเรียน พื้นฐานทางภาษา และความพร้อมในการเรียนรู้ เพื่อออกแบบกระบวนการจัดการเรียนรู้ที่เหมาะสม</p>
-        <h4 style="color: var(--primary-navy); font-size: 1.05rem; margin: 1.1rem 0 0.6rem;">รายละเอียดที่ต้องศึกษา</h4>
-        <ul>
-            <li>หลักสูตรแกนกลางและตัวชี้วัดที่เกี่ยวข้อง</li>
-            <li>บริบทของสถานศึกษาและชุมชน</li>
-            <li>พื้นฐานและความสามารถของผู้เรียน</li>
-            <li>สื่อและแหล่งเรียนรู้ที่มีอยู่</li>
-        </ul>
-        <div class="step-modal-highlight"><p>เป้าหมาย: เข้าใจภาพรวมของหลักสูตรและผู้เรียน เพื่อวางแผนการจัดการเรียนรู้ให้เหมาะสม</p></div>
-    ` },
-    2: { number: '02', eyebrow: 'ขั้นตอนที่ 2', title: 'วิเคราะห์ปัญหา', theme: 'gold', body: `
-        <p>การวิเคราะห์ปัญหาที่พบในชั้นเรียน เพื่อค้นหาสาเหตุที่แท้จริงและกำหนดแนวทางแก้ไขที่มีประสิทธิภาพ</p>
-        <p>จากการสังเกตและประเมินผู้เรียน พบว่านักเรียนมีปัญหาด้านการอ่านคำศัพท์ภาษาอังกฤษ ส่งผลให้ไม่เข้าใจความหมายและไม่สามารถนำไปใช้ในประโยคได้</p>
-        <h4 style="color: var(--accent-gold); font-size: 1.05rem; margin: 1.1rem 0 0.6rem;">ประเด็นที่วิเคราะห์</h4>
-        <ul>
-            <li>นักเรียนอ่านคำศัพท์ไม่ได้ → ไม่เข้าใจความหมาย</li>
-            <li>ไม่เข้าใจประโยคเพราะขาดคลังคำศัพท์</li>
-            <li>การเชื่อมโยงตัวอักษรกับเสียง (Phonics) เป็นจุดอ่อน</li>
-            <li>ขาดความมั่นใจและมีเจตคติเชิงลบต่อวิชาภาษาอังกฤษ</li>
-        </ul>
-        <div class="step-modal-highlight"><p>จุดเริ่มต้น: ต้องแก้ที่การอ่านออกเสียงก่อน แล้วค่อยๆ ต่อยอดไปสู่ความหมายและการนำไปใช้</p></div>
-    ` },
-    3: { number: '03', eyebrow: 'ขั้นตอนที่ 3', title: 'ออกแบบกระบวนการ', theme: 'teal', body: `
-        <p>การออกแบบกระบวนการจัดการเรียนรู้ 5 ขั้นตอน ที่เรียกว่า "READ Model" โดยใช้การเทียบเสียงภาษาไทย-อังกฤษเป็นสะพานเชื่อม</p>
-        <p>กระบวนการนี้เน้นการฝึกฝนซ้ำๆ ผ่านกิจกรรมที่หลากหลาย เพื่อให้นักเรียนเกิดทักษะการอ่านอย่างเป็นธรรมชาติ</p>
-        <h4 style="color: var(--accent-teal); font-size: 1.05rem; margin: 1.1rem 0 0.6rem;">5 ขั้นตอนของ READ Model</h4>
-        <ul>
-            <li><strong>เปิดใจ</strong> — สร้างบรรยากาศเป็นมิตร ลดความกลัว</li>
-            <li><strong>เทียบเสียง</strong> — ใช้ภาษาไทยเชื่อมตัวอักษรกับเสียง</li>
-            <li><strong>อ่านและเชื่อมความหมาย</strong> — ฝึกอ่าน สะกด จับคู่ความหมาย</li>
-            <li><strong>ฝึกซ้ำด้วย Blooket</strong> — ทบทวนผ่านเกมที่หลากหลาย</li>
-            <li><strong>นำไปใช้</strong> — อ่านและทำความเข้าใจประโยค</li>
-        </ul>
-        <div class="step-modal-highlight"><p>หัวใจสำคัญ: ทำให้นักเรียน "อ่านออก → เข้าใจความหมาย → นำไปใช้ได้จริง"</p></div>
-    ` },
-    4: { number: '04', eyebrow: 'ขั้นตอนที่ 4', title: 'จัดกิจกรรมการเรียนรู้', theme: 'navy', body: `
-        <p>การนำกระบวนการ 5 ขั้นตอน มาสู่การจัดการเรียนรู้จริงในชั้นเรียน โดยคำนึงถึงความแตกต่างระหว่างบุคคล (Differentiated Instruction)</p>
-        <p>ครูผู้สอนใช้เทคนิคการสอนที่หลากหลาย เช่น การสอนแบบ Phonics, การใช้ภาษาไทยเป็นสะพาน, การจับคู่คำศัพท์กับภาพ และการเรียนรู้ผ่านการเล่น</p>
-        <h4 style="color: var(--primary-navy); font-size: 1.05rem; margin: 1.1rem 0 0.6rem;">กิจกรรมหลัก</h4>
-        <ul>
-            <li>ฝึกอ่านคำศัพท์รายบุคคลและร่วมกัน</li>
-            <li>ฝึกสะกดคำและเชื่อมโยงกับความหมาย</li>
-            <li>ฝึกเขียนตามคำบอก (Dictation)</li>
-            <li>ปรับระดับการช่วยเหลือตามความสามารถของแต่ละคน</li>
-            <li>เปิดโอกาสให้นักเรียนได้ฝึกด้วยตนเอง</li>
-        </ul>
-        <div class="step-modal-highlight"><p>ผลลัพธ์: นักเรียนเกิดความมั่นใจและกล้าออกเสียงมากขึ้น</p></div>
-    ` },
-    5: { number: '05', eyebrow: 'ขั้นตอนที่ 5', title: 'เกม Blooket', theme: 'gold', body: `
-        <p>การใช้เกม Blooket เป็นเครื่องมือฝึกซ้ำและทบทวนคำศัพท์ เพื่อเพิ่มโอกาสพบคำศัพท์ซ้ำในบรรยากาศที่สนุกสนาน</p>
-        <p>Blooket เป็นแพลตฟอร์มเกมการศึกษา ที่ครูสามารถสร้างชุดคำถามและให้นักเรียนเล่นได้ทั้งแบบรายบุคคลและแบบแข่งขัน</p>
-        <h4 style="color: var(--accent-gold); font-size: 1.05rem; margin: 1.1rem 0 0.6rem;">แนวทางการใช้</h4>
-        <ul>
-            <li>จัดทำชุดคำถามจากคำศัพท์ในบทเรียน</li>
-            <li>ใช้รูปแบบเกมที่หลากหลายเพื่อไม่ให้จำเจ</li>
-            <li>เพิ่มโอกาสพบคำศัพท์ซ้ำเพื่อกระตุ้นการมีส่วนร่วม</li>
-            <li>ไม่ใช้ผลเกมเพียงอย่างเดียวในการตัดสินการเรียนรู้</li>
-            <li>แจกรหัสเกมผ่านช่องทางห้องเรียน เพื่อฝึกทบทวนนอกเวลา</li>
-        </ul>
-        <div class="step-modal-highlight"><p>ข้อควรระวัง: เกมเป็นแค่เครื่องมือช่วยฝึกซ้ำ ไม่ใช่การวัดผลการเรียนรู้หลัก</p></div>
-    ` },
-    6: { number: '06', eyebrow: 'ขั้นตอนที่ 6', title: 'วัดและประเมินผล', theme: 'teal', body: `
-        <p>การวัดและประเมินผลจากการปฏิบัติจริง เพื่อดูพัฒนาการของนักเรียนอย่างเป็นองค์รวม ทั้งด้านทักษะ เจตคติ และการนำไปใช้</p>
-        <p>ใช้การประเมินตามสภาพจริง (Authentic Assessment) ที่สอดคล้องกับกระบวนการจัดการเรียนรู้</p>
-        <h4 style="color: var(--accent-teal); font-size: 1.05rem; margin: 1.1rem 0 0.6rem;">วิธีการประเมิน</h4>
-        <ul>
-            <li>สังเกตการอ่านออกเสียงในชั้นเรียน</li>
-            <li>ประเมินการบอกและเชื่อมโยงความหมาย</li>
-            <li>ประเมินการอ่านและแปลประโยค</li>
-            <li>ประเมินผลงานและพฤติกรรมการมีส่วนร่วม</li>
-        </ul>
-        <div class="step-modal-highlight"><p>เป้าหมาย: นักเรียนผ่านเกณฑ์ร้อยละ 70 ขึ้นไป และมีเจตคติที่ดีต่อการเรียนภาษาอังกฤษ</p></div>
-    ` }
+/* ============================================================
+   STEP DATA
+============================================================ */
+var STEP_DATA = {
+    1: { number: '01', eyebrow: 'ขั้นตอนที่ 1', title: 'ศึกษาและวิเคราะห์', theme: 'navy', body: '\
+        <p>การศึกษาและวิเคราะห์หลักสูตรแกนกลางการศึกษาขั้นพื้นฐาน กลุ่มสาระการเรียนรู้ภาษาต่างประเทศ (ภาษาอังกฤษ) เพื่อทำความเข้าใจมาตรฐานการเรียนรู้ ตัวชี้วัด และสาระการเรียนรู้ที่เกี่ยวข้อง</p>\
+        <p>วิเคราะห์บริบทของผู้เรียน ได้แก่ ระดับชั้น จำนวนนักเรียน พื้นฐานทางภาษา และความพร้อมในการเรียนรู้ เพื่อออกแบบกระบวนการจัดการเรียนรู้ที่เหมาะสม</p>\
+        <h4 style="color: var(--primary-navy); font-size: 1.05rem; margin: 1.1rem 0 0.6rem;">รายละเอียดที่ต้องศึกษา</h4>\
+        <ul>\
+            <li>หลักสูตรแกนกลางและตัวชี้วัดที่เกี่ยวข้อง</li>\
+            <li>บริบทของสถานศึกษาและชุมชน</li>\
+            <li>พื้นฐานและความสามารถของผู้เรียน</li>\
+            <li>สื่อและแหล่งเรียนรู้ที่มีอยู่</li>\
+        </ul>\
+        <div class="step-modal-highlight"><p>เป้าหมาย: เข้าใจภาพรวมของหลักสูตรและผู้เรียน เพื่อวางแผนการจัดการเรียนรู้ให้เหมาะสม</p></div>\
+    ' },
+    2: { number: '02', eyebrow: 'ขั้นตอนที่ 2', title: 'วิเคราะห์ปัญหา', theme: 'gold', body: '\
+        <p>การวิเคราะห์ปัญหาที่พบในชั้นเรียน เพื่อค้นหาสาเหตุที่แท้จริงและกำหนดแนวทางแก้ไขที่มีประสิทธิภาพ</p>\
+        <p>จากการสังเกตและประเมินผู้เรียน พบว่านักเรียนมีปัญหาด้านการอ่านคำศัพท์ภาษาอังกฤษ ส่งผลให้ไม่เข้าใจความหมายและไม่สามารถนำไปใช้ในประโยคได้</p>\
+        <h4 style="color: var(--accent-gold); font-size: 1.05rem; margin: 1.1rem 0 0.6rem;">ประเด็นที่วิเคราะห์</h4>\
+        <ul>\
+            <li>นักเรียนอ่านคำศัพท์ไม่ได้ → ไม่เข้าใจความหมาย</li>\
+            <li>ไม่เข้าใจประโยคเพราะขาดคลังคำศัพท์</li>\
+            <li>การเชื่อมโยงตัวอักษรกับเสียง (Phonics) เป็นจุดอ่อน</li>\
+            <li>ขาดความมั่นใจและมีเจตคติเชิงลบต่อวิชาภาษาอังกฤษ</li>\
+        </ul>\
+        <div class="step-modal-highlight"><p>จุดเริ่มต้น: ต้องแก้ที่การอ่านออกเสียงก่อน แล้วค่อยๆ ต่อยอดไปสู่ความหมายและการนำไปใช้</p></div>\
+    ' },
+    3: { number: '03', eyebrow: 'ขั้นตอนที่ 3', title: 'ออกแบบกระบวนการ', theme: 'teal', body: '\
+        <p>การออกแบบกระบวนการจัดการเรียนรู้ 5 ขั้นตอน ที่เรียกว่า "READ Model" โดยใช้การเทียบเสียงภาษาไทย-อังกฤษเป็นสะพานเชื่อม</p>\
+        <p>กระบวนการนี้เน้นการฝึกฝนซ้ำๆ ผ่านกิจกรรมที่หลากหลาย เพื่อให้นักเรียนเกิดทักษะการอ่านอย่างเป็นธรรมชาติ</p>\
+        <h4 style="color: var(--accent-teal); font-size: 1.05rem; margin: 1.1rem 0 0.6rem;">5 ขั้นตอนของ READ Model</h4>\
+        <ul>\
+            <li><strong>เปิดใจ</strong> — สร้างบรรยากาศเป็นมิตร ลดความกลัว</li>\
+            <li><strong>เทียบเสียง</strong> — ใช้ภาษาไทยเชื่อมตัวอักษรกับเสียง</li>\
+            <li><strong>อ่านและเชื่อมความหมาย</strong> — ฝึกอ่าน สะกด จับคู่ความหมาย</li>\
+            <li><strong>ฝึกซ้ำด้วย Blooket</strong> — ทบทวนผ่านเกมที่หลากหลาย</li>\
+            <li><strong>นำไปใช้</strong> — อ่านและทำความเข้าใจประโยค</li>\
+        </ul>\
+        <div class="step-modal-highlight"><p>หัวใจสำคัญ: ทำให้นักเรียน "อ่านออก → เข้าใจความหมาย → นำไปใช้ได้จริง"</p></div>\
+    ' },
+    4: { number: '04', eyebrow: 'ขั้นตอนที่ 4', title: 'จัดกิจกรรมการเรียนรู้', theme: 'navy', body: '\
+        <p>การนำกระบวนการ 5 ขั้นตอน มาสู่การจัดการเรียนรู้จริงในชั้นเรียน โดยคำนึงถึงความแตกต่างระหว่างบุคคล (Differentiated Instruction)</p>\
+        <p>ครูผู้สอนใช้เทคนิคการสอนที่หลากหลาย เช่น การสอนแบบ Phonics, การใช้ภาษาไทยเป็นสะพาน, การจับคู่คำศัพท์กับภาพ และการเรียนรู้ผ่านการเล่น</p>\
+        <h4 style="color: var(--primary-navy); font-size: 1.05rem; margin: 1.1rem 0 0.6rem;">กิจกรรมหลัก</h4>\
+        <ul>\
+            <li>ฝึกอ่านคำศัพท์รายบุคคลและร่วมกัน</li>\
+            <li>ฝึกสะกดคำและเชื่อมโยงกับความหมาย</li>\
+            <li>ฝึกเขียนตามคำบอก (Dictation)</li>\
+            <li>ปรับระดับการช่วยเหลือตามความสามารถของแต่ละคน</li>\
+            <li>เปิดโอกาสให้นักเรียนได้ฝึกด้วยตนเอง</li>\
+        </ul>\
+        <div class="step-modal-highlight"><p>ผลลัพธ์: นักเรียนเกิดความมั่นใจและกล้าออกเสียงมากขึ้น</p></div>\
+    ' },
+    5: { number: '05', eyebrow: 'ขั้นตอนที่ 5', title: 'เกม Blooket', theme: 'gold', body: '\
+        <p>การใช้เกม Blooket เป็นเครื่องมือฝึกซ้ำและทบทวนคำศัพท์ เพื่อเพิ่มโอกาสพบคำศัพท์ซ้ำในบรรยากาศที่สนุกสนาน</p>\
+        <p>Blooket เป็นแพลตฟอร์มเกมการศึกษา ที่ครูสามารถสร้างชุดคำถามและให้นักเรียนเล่นได้ทั้งแบบรายบุคคลและแบบแข่งขัน</p>\
+        <h4 style="color: var(--accent-gold); font-size: 1.05rem; margin: 1.1rem 0 0.6rem;">แนวทางการใช้</h4>\
+        <ul>\
+            <li>จัดทำชุดคำถามจากคำศัพท์ในบทเรียน</li>\
+            <li>ใช้รูปแบบเกมที่หลากหลายเพื่อไม่ให้จำเจ</li>\
+            <li>เพิ่มโอกาสพบคำศัพท์ซ้ำเพื่อกระตุ้นการมีส่วนร่วม</li>\
+            <li>ไม่ใช้ผลเกมเพียงอย่างเดียวในการตัดสินการเรียนรู้</li>\
+            <li>แจกรหัสเกมผ่านช่องทางห้องเรียน เพื่อฝึกทบทวนนอกเวลา</li>\
+        </ul>\
+        <div class="step-modal-highlight"><p>ข้อควรระวัง: เกมเป็นแค่เครื่องมือช่วยฝึกซ้ำ ไม่ใช่การวัดผลการเรียนรู้หลัก</p></div>\
+    ' },
+    6: { number: '06', eyebrow: 'ขั้นตอนที่ 6', title: 'วัดและประเมินผล', theme: 'teal', body: '\
+        <p>การวัดและประเมินผลจากการปฏิบัติจริง เพื่อดูพัฒนาการของนักเรียนอย่างเป็นองค์รวม ทั้งด้านทักษะ เจตคติ และการนำไปใช้</p>\
+        <p>ใช้การประเมินตามสภาพจริง (Authentic Assessment) ที่สอดคล้องกับกระบวนการจัดการเรียนรู้</p>\
+        <h4 style="color: var(--accent-teal); font-size: 1.05rem; margin: 1.1rem 0 0.6rem;">วิธีการประเมิน</h4>\
+        <ul>\
+            <li>สังเกตการอ่านออกเสียงในชั้นเรียน</li>\
+            <li>ประเมินการบอกและเชื่อมโยงความหมาย</li>\
+            <li>ประเมินการอ่านและแปลประโยค</li>\
+            <li>ประเมินผลงานและพฤติกรรมการมีส่วนร่วม</li>\
+        </ul>\
+        <div class="step-modal-highlight"><p>เป้าหมาย: นักเรียนผ่านเกณฑ์ร้อยละ 70 ขึ้นไป และมีเจตคติที่ดีต่อการเรียนภาษาอังกฤษ</p></div>\
+    ' }
 };
 
 function openStepModal(stepNumber) {
-    const data = STEP_DATA[stepNumber];
+    var data = STEP_DATA[stepNumber];
     if (!data) return;
     SoundEngine.play('modalOpen');
-    const modal = document.getElementById('stepModal');
+    var modal = document.getElementById('stepModal');
     document.getElementById('modalNumber').textContent = data.number;
     document.getElementById('modalNumber').className = 'step-modal-number ' + data.theme;
     document.getElementById('modalEyebrow').textContent = data.eyebrow;
@@ -2192,83 +2243,87 @@ function openStepModal(stepNumber) {
 
 function closeStepModal(event) {
     if (event && event.target !== event.currentTarget && event.type === 'click') return;
-    const modal = document.getElementById('stepModal');
+    var modal = document.getElementById('stepModal');
     if (!modal.classList.contains('show')) return;
     SoundEngine.play('modalClose');
     modal.classList.remove('show');
     document.body.style.overflow = '';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const slides = document.querySelectorAll('.slide');
-    const navItems = document.querySelectorAll('.nav-item');
-    const progressBar = document.getElementById('progressBar');
-    const sidebarNav = document.getElementById('sidebarNav');
-    const kpiCircle = document.getElementById('kpiCircle');
-    const kpiNumber = document.getElementById('kpiNumber');
+/* ============================================================
+   MAIN  —  SLIDE / NAV / KPI / LIGHTBOX
+============================================================ */
+document.addEventListener('DOMContentLoaded', function () {
+    var slides = document.querySelectorAll('.slide');
+    var navItems = document.querySelectorAll('.nav-item');
+    var progressBar = document.getElementById('progressBar');
+    var sidebarNav = document.getElementById('sidebarNav');
+    var kpiCircle = document.getElementById('kpiCircle');
+    var kpiNumber = document.getElementById('kpiNumber');
 
-    let currentSlideIndex = 0;
-    let kpiAnimated = false;
-    let lastSlideChangeTime = 0;
+    var currentSlideIndex = 0;
+    var kpiAnimated = false;
+    var lastSlideChangeTime = 0;
 
-    let rafPending = false;
-    let targetX = 30, targetY = 20;
-    let currentX = 30, currentY = 20;
-
-    document.addEventListener('mousemove', (e) => {
-        targetX = (e.clientX / window.innerWidth) * 100;
-        targetY = (e.clientY / window.innerHeight) * 100;
-        if (!rafPending) { rafPending = true; requestAnimationFrame(smoothLight); }
-    }, { passive: true });
-
-    function smoothLight() {
-        currentX += (targetX - currentX) * 0.12;
-        currentY += (targetY - currentY) * 0.12;
-        document.documentElement.style.setProperty('--light-x', currentX + '%');
-        document.documentElement.style.setProperty('--light-y', currentY + '%');
-        if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) requestAnimationFrame(smoothLight);
-        else rafPending = false;
+    // ---------- Update nav / progress ----------
+    function updateNav(index) {
+        navItems.forEach(function (item, i) { item.classList.toggle('active', i === index); });
+        if (progressBar) progressBar.style.width = ((index + 1) / slides.length * 100) + '%';
+        if (index > 0 && sidebarNav) sidebarNav.classList.add('visible');
     }
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-                const index = Array.from(slides).indexOf(entry.target);
-                if (index !== currentSlideIndex && Date.now() - lastSlideChangeTime > 300) {
-                    SoundEngine.play('slideChange');
-                    lastSlideChangeTime = Date.now();
+    // ---------- IntersectionObserver (with Safari fallback) ----------
+    if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    var index = Array.prototype.indexOf.call(slides, entry.target);
+                    if (index !== currentSlideIndex && Date.now() - lastSlideChangeTime > 300) {
+                        SoundEngine.play('slideChange');
+                        lastSlideChangeTime = Date.now();
+                    }
+                    currentSlideIndex = index;
+                    updateNav(index);
+                    if (entry.target.id === 'slide11' && !kpiAnimated) {
+                        setTimeout(animateKPI, 400);
+                        kpiAnimated = true;
+                    }
                 }
-                currentSlideIndex = index;
-                navItems.forEach((item, i) => item.classList.toggle('active', i === index));
-                progressBar.style.width = ((index + 1) / slides.length * 100) + '%';
-                if (index > 0) sidebarNav.classList.add('visible');
-                if (entry.target.id === 'slide11' && !kpiAnimated) {
-                    setTimeout(() => animateKPI(), 400);
-                    kpiAnimated = true;
-                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
+
+        slides.forEach(function (slide) { observer.observe(slide); });
+    } else {
+        // Very old Safari: show everything and use scroll position
+        slides.forEach(function (slide) { slide.classList.add('active'); });
+        window.addEventListener('scroll', function () {
+            var idx = Math.round(window.pageYOffset / window.innerHeight);
+            if (idx >= 0 && idx < slides.length) {
+                currentSlideIndex = idx;
+                updateNav(idx);
             }
-        });
-    }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
+        }, { passive: true });
+    }
 
-    slides.forEach(slide => observer.observe(slide));
-
-    setTimeout(() => {
-        slides[0].classList.add('active');
-        const slide8 = document.getElementById('slide8');
+    // Ensure the first slide is visible immediately
+    setTimeout(function () {
+        if (slides[0]) slides[0].classList.add('active');
+        var slide8 = document.getElementById('slide8');
         if (slide8) slide8.classList.add('active');
     }, 100);
 
+    // ---------- KPI circle animation ----------
     function animateKPI() {
         if (!kpiCircle || !kpiNumber) return;
-        const targetPercent = 70;
-        const duration = 2200;
-        const start = performance.now();
-        const circumference = 2 * Math.PI * 100;
+        var targetPercent = 70;
+        var duration = 2200;
+        var start = (window.performance && performance.now) ? performance.now() : Date.now();
+        var circumference = 2 * Math.PI * 100;
         function update(now) {
-            const progress = Math.min((now - start) / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            const currentPercent = Math.floor(eased * targetPercent);
+            var progress = Math.min((now - start) / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            var currentPercent = Math.floor(eased * targetPercent);
             kpiNumber.textContent = currentPercent;
             kpiCircle.style.strokeDashoffset = circumference - (currentPercent / 100) * circumference;
             if (progress < 1) requestAnimationFrame(update);
@@ -2280,47 +2335,52 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(update);
     }
 
-    navItems.forEach(item => {
-        item.addEventListener('click', () => {
-            document.getElementById(item.dataset.target)?.scrollIntoView({ behavior: 'smooth' });
+    // ---------- Sidebar navigation ----------
+    navItems.forEach(function (item) {
+        item.addEventListener('click', function () {
+            var target = document.getElementById(item.dataset.target);
+            if (target && target.scrollIntoView) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     });
 
-    document.addEventListener('keydown', (e) => {
-        const lightboxOpen = document.getElementById('lightbox').classList.contains('show');
-        const modalOpen = document.getElementById('stepModal').classList.contains('show');
+    // ---------- Keyboard navigation ----------
+    document.addEventListener('keydown', function (e) {
+        var lightboxOpen = document.getElementById('lightbox').classList.contains('show');
+        var modalOpen = document.getElementById('stepModal').classList.contains('show');
         if (lightboxOpen || modalOpen) return;
         if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
             e.preventDefault();
-            slides[Math.min(currentSlideIndex + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+            slides[Math.min(currentSlideIndex + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
             e.preventDefault();
-            slides[Math.max(currentSlideIndex - 1, 0)].scrollIntoView({ behavior: 'smooth' });
-        } else if (e.key === 'Home') { e.preventDefault(); slides[0].scrollIntoView({ behavior: 'smooth' }); }
-        else if (e.key === 'End') { e.preventDefault(); slides[slides.length - 1].scrollIntoView({ behavior: 'smooth' }); }
+            slides[Math.max(currentSlideIndex - 1, 0)].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (e.key === 'Home') { e.preventDefault(); slides[0].scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        else if (e.key === 'End') { e.preventDefault(); slides[slides.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' }); }
     });
 
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightboxImg');
-    const lightboxCounter = document.getElementById('lightboxCounter');
-    const allImages = document.querySelectorAll('img');
-    let currentImages = [];
-    let currentImageIndex = 0;
+    // ---------- Lightbox ----------
+    var lightbox = document.getElementById('lightbox');
+    var lightboxImg = document.getElementById('lightboxImg');
+    var lightboxCounter = document.getElementById('lightboxCounter');
+    var allImages = document.querySelectorAll('img');
+    var currentImages = [];
+    var currentImageIndex = 0;
 
-    allImages.forEach(img => {
+    allImages.forEach(function (img) {
         if (img.closest('.video-tab-btn') || img.closest('.play-icon') ||
             img.closest('.video-thumbnail') || img.classList.contains('school-logo') ||
             img.closest('.qual-hero-icon') || img.closest('.cycle-icon') || img.closest('.cycle-card')) return;
 
-        img.addEventListener('click', function(e) {
+        img.addEventListener('click', function (e) {
             e.stopPropagation();
-            const slide = this.closest('.slide');
-            const imgsInSlide = Array.from(slide.querySelectorAll('img')).filter(i =>
-                !i.closest('.video-tab-btn') && !i.closest('.play-icon') &&
-                !i.closest('.video-thumbnail') && !i.classList.contains('school-logo') &&
-                !i.closest('.qual-hero-icon') && !i.closest('.cycle-icon') && !i.closest('.cycle-card')
-            );
-            currentImages = imgsInSlide.map(i => i.src);
+            var slide = this.closest('.slide');
+            if (!slide) return;
+            var imgsInSlide = Array.prototype.filter.call(slide.querySelectorAll('img'), function (i) {
+                return !i.closest('.video-tab-btn') && !i.closest('.play-icon') &&
+                    !i.closest('.video-thumbnail') && !i.classList.contains('school-logo') &&
+                    !i.closest('.qual-hero-icon') && !i.closest('.cycle-icon') && !i.closest('.cycle-card');
+            });
+            currentImages = imgsInSlide.map(function (i) { return i.src; });
             currentImageIndex = imgsInSlide.indexOf(this);
             if (currentImages.length === 0) return;
             SoundEngine.play('lightboxOpen');
@@ -2332,66 +2392,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateLightbox() {
         lightboxImg.src = currentImages[currentImageIndex];
-        lightboxCounter.textContent = `${currentImageIndex + 1} / ${currentImages.length}`;
+        lightboxCounter.textContent = (currentImageIndex + 1) + ' / ' + currentImages.length;
     }
 
-    window.nextImage = function() {
+    window.nextImage = function () {
         if (currentImageIndex < currentImages.length - 1) { currentImageIndex++; SoundEngine.play('click'); updateLightbox(); }
         else closeLightbox();
     };
-    window.prevImage = function() {
+    window.prevImage = function () {
         if (currentImageIndex > 0) { currentImageIndex--; SoundEngine.play('click'); updateLightbox(); }
         else closeLightbox();
     };
-    window.closeLightbox = function() {
+    window.closeLightbox = function () {
         SoundEngine.play('modalClose');
         lightbox.classList.remove('show');
         document.body.style.overflow = '';
-        setTimeout(() => { lightboxImg.src = ''; }, 300);
+        setTimeout(function () { lightboxImg.src = ''; }, 300);
     };
 
-    lightbox.addEventListener('click', function(e) { if (e.target === lightbox) closeLightbox(); });
-    document.addEventListener('keydown', function(e) {
+    if (lightbox) {
+        lightbox.addEventListener('click', function (e) { if (e.target === lightbox) closeLightbox(); });
+    }
+
+    document.addEventListener('keydown', function (e) {
         if (lightbox.classList.contains('show')) {
             if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowRight') nextImage();
-            if (e.key === 'ArrowLeft') prevImage();
+            if (e.key === 'ArrowRight') window.nextImage();
+            if (e.key === 'ArrowLeft') window.prevImage();
         }
     });
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
-            const modal = document.getElementById('stepModal');
+            var modal = document.getElementById('stepModal');
             if (modal.classList.contains('show')) closeStepModal();
         }
     });
 });
 
-let currentFileId = "175KCwtHjGok9_tSQz0DxqptXZYEwIf4T";
+/* ============================================================
+   VIDEO
+============================================================ */
+var currentFileId = "175KCwtHjGok9_tSQz0DxqptXZYEwIf4T";
 
 function selectVideo(fileId, thumbnailSrc, btnElement) {
     SoundEngine.play('click');
     currentFileId = fileId;
-    document.querySelectorAll('.video-tab-btn').forEach(btn => btn.classList.remove('active'));
-    btnElement.classList.add('active');
-    const mainThumbnail = document.getElementById('mainThumbnail');
+    var btns = document.querySelectorAll('.video-tab-btn');
+    btns.forEach(function (btn) { btn.classList.remove('active'); });
+    if (btnElement) btnElement.classList.add('active');
+    var mainThumbnail = document.getElementById('mainThumbnail');
     if (mainThumbnail) mainThumbnail.src = thumbnailSrc;
-    const thumbnail = document.getElementById('videoThumbnail');
-    const frame = document.getElementById('videoFrame');
-    thumbnail.style.display = 'block';
-    thumbnail.style.opacity = '1';
-    frame.style.display = 'none';
-    frame.src = '';
+    var thumbnail = document.getElementById('videoThumbnail');
+    var frame = document.getElementById('videoFrame');
+    if (thumbnail) { thumbnail.style.display = 'block'; thumbnail.style.opacity = '1'; }
+    if (frame) { frame.style.display = 'none'; frame.src = ''; }
 }
 
 function playCurrentVideo() {
     SoundEngine.play('videoClick');
-    const thumbnail = document.getElementById('videoThumbnail');
-    const frame = document.getElementById('videoFrame');
+    var thumbnail = document.getElementById('videoThumbnail');
+    var frame = document.getElementById('videoFrame');
+    if (!thumbnail || !frame) return;
     thumbnail.style.opacity = '0';
-    setTimeout(() => {
+    setTimeout(function () {
         thumbnail.style.display = 'none';
         frame.style.display = 'block';
-        frame.src = `https://drive.google.com/file/d/${currentFileId}/preview?autoplay=1`;
+        frame.src = 'https://drive.google.com/file/d/' + currentFileId + '/preview?autoplay=1';
     }, 250);
 }
 </script>
